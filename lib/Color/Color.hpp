@@ -4,10 +4,17 @@
 typedef int color;
 
 class Color {
-    public:
+    private:
+        /// @brief Uchwyt do konsoli
         static void* hConsole;
+
+        /// @brief Domyślne wartości kolorów w konsoli
         static int originalAttributes;
 
+    public: 
+        /**
+         * @{ @name Numery kolorów, które mogą być użyte w konsoli 
+         */
         static const color BLACK = 0;
         static const color BLUE = 1;
         static const color GREEN = 2;
@@ -24,9 +31,22 @@ class Color {
         static const color BRIGHT_PURPLE = 13;
         static const color BRIGHT_YELLOW = 14;
         static const color BRIGHT_WHITE = 15;
+        /** 
+         * @} 
+         */
 
+        /**
+         * @brief Ustawia kolor tła i tekstu konsoli
+         * 
+         * @param fgColor [int] Kolor tekstu (0-15) 
+         * @param bgColor [int] Kolor tła (0-15)
+         */
         static void set ( color foreground = WHITE, color background = BLACK );
+
+        /// @brief Resetuje kolory do ustawień oryginalnych
         static void reset ();
+
+        /// @brief Inicjalizuje statyczną klasę
         static void Initialize ();
 };
 
