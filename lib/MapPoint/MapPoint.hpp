@@ -67,43 +67,43 @@ class MapPoint {
         // ale nie powinny być modyfikowalne
 
         /// @returns Pozycja X punktu
-        inline int X();
+        int X();
 
         /// @returns Pozycja Y punktu
-        inline int Y();
+        int Y();
 
         /// @returns Waga punktu
-        inline float Weight();
+        float Weight();
 
         /// @returns Symbol reprezentujący ten punkt
-        inline char Symbol();
+        char Symbol();
 
         /// @returns Kolor symbolu
-        inline color FGColor();
+        color FGColor();
 
         /// @returns Kolor tła symbolu
-        inline color BGColor();
+        color BGColor();
 
         /// @returns Koszt dotarcia od startu do tego punktu.
-        inline float GCost();
+        float GCost();
 
         /// @returns (potencjalny) koszt dotarcia od tego punktu do celu.
-        inline float HCost();
+        float HCost();
 
         /// @returns "opłacalność" punktu (mniej -> lepiej).
-        inline float FCost();
+        float FCost();
 
         /// @brief Ustawia koszt dotarcia od startu do tego punktu.
-        inline void SetGCost( float gCost );
+        void SetGCost( float gCost );
 
         /// @brief Ustawia koszt dotarcia od tego punktu do celu.
-        inline void SetHCost( float fCost );
+        void SetHCost( float fCost );
 
         /// @brief Ustawia punkt poprzedni w trasie do celu.
-        inline void SetParent ( MapPoint *parent );
+        void SetParent ( MapPoint *parent );
 
         /// @returns Punkt poprzedni w trasie do celu.
-        inline MapPoint* getParent();
+        MapPoint* getParent();
 
         /**
          * @brief Sprawdza czy @p other to ten sam punkt.
@@ -112,17 +112,17 @@ class MapPoint {
          * @param other Punkt do porównania
          * @return true | false
          */
-        inline bool Is ( MapPoint *other );
+        bool Is ( MapPoint *other );
         
         /**
          * @{ @name Przeciążenia operatorów
          */
-        inline bool operator==( MapPoint *other );
-        inline bool operator!=( MapPoint *other );
-        inline bool operator< ( MapPoint *other );
-        inline bool operator> ( MapPoint *other );
-        inline bool operator<=( MapPoint *other );
-        inline bool operator>=( MapPoint *other );
+        bool operator==( MapPoint *other );
+        bool operator!=( MapPoint *other );
+        bool operator< ( MapPoint *other );
+        bool operator> ( MapPoint *other );
+        bool operator<=( MapPoint *other );
+        bool operator>=( MapPoint *other );
         /**
          * @}
          */
