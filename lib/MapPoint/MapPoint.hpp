@@ -51,6 +51,8 @@ class MapPoint {
         void calculateFCost ();
 
     public:
+        MapPoint();
+
         MapPoint( 
             int x, 
             int y, 

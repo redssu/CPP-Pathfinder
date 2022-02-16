@@ -6,6 +6,19 @@
 /**
  * Publiczne
  */
+MapPoint::MapPoint () {
+    this->x = 0;
+    this->y = 0;
+    this->weight = 1.0;
+    this->symbol = ' ';
+    this->fgColor = Color::WHITE;
+    this->bgColor = Color::BLACK;
+    this->gCost = 0.0;
+    this->hCost = 0.0;
+    this->fCost = 0.0;
+    this->parent = NULL;
+}
+
 MapPoint::MapPoint ( 
     int x, 
     int y,
@@ -21,10 +34,9 @@ MapPoint::MapPoint (
     this->fgColor = fgColor;
     this->bgColor = bgColor;
     this->gCost = INFINITY;
-    this->hCost = 0;
+    this->hCost = 0.0;
+    this->fCost = INFINITY;
     this->parent = NULL;
-
-    this->calculateFCost();
 }
 
 int MapPoint::X () { return this->x; }
@@ -39,8 +51,8 @@ float MapPoint::GCost () { return this->gCost; }
 float MapPoint::HCost () { return this->hCost; }
 float MapPoint::FCost () { return this->fCost; }
 
-void MapPoint::SetGCost ( float gCost ) { this->gCost = gCost; }
-void MapPoint::SetHCost ( float fCost ) { this->hCost = fCost; }
+void MapPoint::SetGCost ( float gCost ) { this->gCost = gCost; this->calculateFCost(); }
+void MapPoint::SetHCost ( float fCost ) { this->hCost = fCost; this->calculateFCost(); }
 
 void MapPoint::SetParent ( MapPoint *parent ) { this->parent = parent; }
 MapPoint* MapPoint::getParent () { return this->parent; }
