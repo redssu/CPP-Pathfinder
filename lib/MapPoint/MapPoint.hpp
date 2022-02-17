@@ -24,13 +24,13 @@ class MapPoint {
         color bgColor;
 
         /// @brief koszt dotarcia od startu do tego punktu
-        float gCost; 
+        int gCost; 
 
         /// @brief (potencjalny) koszt dotarcia od tego punktu do celu
-        float hCost;
+        int hCost;
 
         /// @brief "opłacalność" punktu (mniej -> lepiej)
-        float fCost;
+        int fCost;
 
         /// @brief Poprzedni punkt w drodze do punktu startowego
         MapPoint* parent;
@@ -85,25 +85,25 @@ class MapPoint {
         color BGColor();
 
         /// @returns Koszt dotarcia od startu do tego punktu.
-        float GCost();
+        int GCost();
 
         /// @returns (potencjalny) koszt dotarcia od tego punktu do celu.
-        float HCost();
+        int HCost();
 
         /// @returns "opłacalność" punktu (mniej -> lepiej).
-        float FCost();
+        int FCost();
 
         /// @brief Ustawia koszt dotarcia od startu do tego punktu.
-        void SetGCost( float gCost );
+        void SetGCost( int gCost );
 
         /// @brief Ustawia koszt dotarcia od tego punktu do celu.
-        void SetHCost( float fCost );
+        void SetHCost( int fCost );
 
         /// @brief Ustawia punkt poprzedni w trasie do celu.
         void SetParent ( MapPoint *parent );
 
         /// @returns Punkt poprzedni w trasie do celu.
-        MapPoint* getParent();
+        MapPoint* GetParent();
 
         /**
          * @brief Sprawdza czy @p other to ten sam punkt.
@@ -118,11 +118,22 @@ class MapPoint {
          * @{ @name Przeciążenia operatorów
          */
         bool operator==( MapPoint *other );
+        bool operator==( MapPoint other );
+
         bool operator!=( MapPoint *other );
+        bool operator!=( MapPoint other );
+
         bool operator< ( MapPoint *other );
+        bool operator< ( MapPoint other );
+
         bool operator> ( MapPoint *other );
+        bool operator> ( MapPoint other );
+
         bool operator<=( MapPoint *other );
+        bool operator<=( MapPoint other );
+
         bool operator>=( MapPoint *other );
+        bool operator>=( MapPoint other );
         /**
          * @}
          */
