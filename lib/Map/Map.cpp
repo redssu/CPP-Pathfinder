@@ -1,3 +1,4 @@
+#include <iostream>
 #include "../Color/Color.hpp"
 #include "Map.hpp"
 
@@ -28,6 +29,18 @@ int Map::Width () { return this->width; }
 int Map::Height () { return this->height; }
 
 MapPoint* Map::GetMap () { return *this->map; }
+
+void Map::Print () {
+    for ( int y = 0; y < this->height; y++ ) {
+        for ( int x = 0; x < this->width; x++ ) {
+            Color::Set( this->map[ y ][ x ].FGColor(), this->map[ y ][ x ].BGColor() );
+            std::cout << this->map[ y ][ x ].Symbol();
+            Color::Reset();
+        }
+
+        std::cout << std::endl;
+    }
+}
 
 /* Definicje Elementów mapy */
 

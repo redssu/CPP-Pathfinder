@@ -1,5 +1,6 @@
 #ifndef Map_HPP
 #define Map_HPP
+#include <iostream>
 #include "../Color/Color.hpp"
 #include "../MapPoint/MapPoint.hpp"
 
@@ -48,6 +49,9 @@ class Map {
         
         /// @brief Zwraca mapę
         MapPoint* GetMap ();
+
+        /// @brief Wyświetla mapę
+        void Print ();
 
         /* Definicje Elementów mapy */
 
