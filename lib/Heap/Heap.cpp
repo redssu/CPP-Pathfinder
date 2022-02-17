@@ -63,6 +63,30 @@ template <class T> void Heap<T>::Pop () {
     FixHeap ( 0 );
 }
 
+template <class MapPoint> bool Heap<MapPoint>::Contains ( MapPoint element ) {
+    int size = heap.size();
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( heap[ i ].Is( element ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template <class T> bool Heap<T>::Contains ( T element ) {
+    int size = heap.size();
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( heap[ i ] == element ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 template <class T> int Heap<T>::Size () {
     return heap.size();
 }

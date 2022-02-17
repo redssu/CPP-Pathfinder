@@ -48,6 +48,14 @@ class Heap {
         void Pop ();
 
         /**
+         * @brief Sprawdza, czy element @p jest w stercie
+         * 
+         * @param element Element do sprawdzenia
+         * @return true, jeśli element jest w stercie
+         */
+        bool Contains ( T element );
+
+        /**
          * @brief Zwraca rozmiar sterty
          * 
          * @return Rozmiar sterty
