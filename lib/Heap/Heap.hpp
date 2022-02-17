@@ -1,6 +1,7 @@
 #ifndef Heap_HPP
 #define Heap_HPP
 #include <vector>
+#include "../MapPoint/MapPoint.hpp"
 
 template <class T>
 class Heap {

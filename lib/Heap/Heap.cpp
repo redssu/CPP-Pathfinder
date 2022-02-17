@@ -1,5 +1,6 @@
 #include <vector>
 #include "Heap.hpp"
+#include "../MapPoint/MapPoint.hpp"
 
 template <class T> void Heap<T>::Swap ( int index1, int index2 ) {
     if ( index1 < 0 || index1 >= heap.size() || index2 < 0 || index2 >= heap.size() ) {
@@ -63,11 +64,11 @@ template <class T> void Heap<T>::Pop () {
     FixHeap ( 0 );
 }
 
-template <class MapPoint> bool Heap<MapPoint>::Contains ( MapPoint element ) {
+template <> bool Heap<MapPoint>::Contains ( MapPoint element ) {
     int size = heap.size();
 
     for ( int i = 0; i < size; i++ ) {
-        if ( heap[ i ].Is( element ) ) {
+        if ( element.Is( &heap[ i ] ) ) {
             return true;
         }
     }
