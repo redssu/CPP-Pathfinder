@@ -98,6 +98,10 @@ bool Map::IsPointInMap ( MapPoint point ) {
     return this->IsPointInMap ( point.X(), point.Y() );
 }
 
+bool Map::IsPointInMap ( MapPoint* point ) {
+    return this->IsPointInMap ( point->X(), point->Y() );
+}
+
 MapPoint* Map::GetMapPoint ( int x, int y ) {
     if ( !this->IsPointInMap( x, y ) ) {
         throw "Map::GetMapPoint: Nieprawidłowe współrzędne punktu";

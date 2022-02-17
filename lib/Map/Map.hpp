@@ -114,6 +114,14 @@ class Map {
          * @return true jeśli punkt należy do mapy
          */
         bool IsPointInMap ( MapPoint point );
+
+         /**
+         * @brief Sprawdza czy punkt należy do mapy
+         * 
+         * @param point Wskaźnik do obiektu punktu
+         * @return true jeśli punkt należy do mapy
+         */
+        bool IsPointInMap ( MapPoint* point );
         
         /**
          * @brief Zwraca punkt z mapy
