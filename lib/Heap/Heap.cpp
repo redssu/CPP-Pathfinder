@@ -7,9 +7,9 @@ template <class T> void Heap<T>::Swap ( int index1, int index2 ) {
         throw "Heap::Swap: Indeks elementu jest nieprawidłowy";
     }
 
-    T temp = heap[ index1 ];
-    heap[ index1 ] = heap[ index2 ];
-    heap[ index2 ] = temp;
+    T temp = this->heap[ index1 ];
+    this->heap[ index1 ] = this->heap[ index2 ];
+    this->heap[ index2 ] = temp;
 }
 
 template <class T> void Heap<T>::FixHeap ( int index ) {
@@ -18,57 +18,102 @@ template <class T> void Heap<T>::FixHeap ( int index ) {
     int leftChildIndex = lowestIndex * 2 + 1;
     int rightChildIndex = lowestIndex * 2 + 2;
 
-
-    if ( leftChildIndex < heap.size() && heap[ lowestIndex ] > heap[ leftChildIndex ] ) {
+    if ( leftChildIndex < this->heap.size() && heap[ lowestIndex ] > heap[ leftChildIndex ] ) {
         lowestIndex = leftChildIndex;
     }
 
-    if ( rightChildIndex < heap.size() && heap[ lowestIndex ] > heap[ rightChildIndex ] ) {
+    if ( rightChildIndex < this->heap.size() && heap[ lowestIndex ] > heap[ rightChildIndex ] ) {
         lowestIndex = rightChildIndex;
     }
 
     if ( lowestIndex != index ) {
-        Swap ( index, lowestIndex );
-        FixHeap ( lowestIndex );
+        this->Swap( index, lowestIndex );
+        this->FixHeap( lowestIndex );
     }
 }
 
 template <class T> void Heap<T>::Insert ( T element ) {
-    heap.push_back ( element );
+    this->heap.push_back( element );
 
-    int index = heap.size() - 1;
+    int index = this->heap.size() - 1;
     int parent = index / 2;
 
-    while ( index > 0 && heap[ index ] < heap[ parent ] ) {
-        Swap ( parent, index );
+    while ( index > 0 && this->heap[ index ] < this->heap[ parent ] ) {
+        this->Swap( parent, index );
         index = parent;
     }
 }
 
-template <class T> T Heap<T>::GetTop () {
-    if ( heap.size() == 0 ) {
-        throw "Heap::GetTop: Pusta sterta";
+template <> void Heap<MapPoint>::InsertOrChange ( MapPoint element ) {
+    int index = -1;
+    int size = this->heap.size();
+
+    // szukamy indeksu elementu
+    for ( int i = 0; i < size; i++ ) {
+        if ( element.Is( &this->heap[ i ] ) ) {
+            index = i;
+            break;
+        }
     }
 
-    return heap[ 0 ];
+    // jeżeli nie znaleziono takiego elementu, to dodajemy go
+    if ( index == -1 ) {
+        this->Insert( element );
+        return;
+    } 
+    
+    // jeżeli znaleziono taki element, to zamieniamy go i naprawiamy stertę
+    this->heap[ index ] = element;
+    this->FixHeap( index );
+}
+
+template <class T> void Heap<T>::InsertOrChange ( T element ) {
+    int index = -1;
+    int size = this->heap.size();
+
+    // szukamy indeksu elementu
+    for ( int i = 0; i < size; i++ ) {
+        if ( this->heap[ i ] == element ) {
+            index = i;
+            break;
+        }
+    }
+
+    // jeżeli nie znaleziono takiego elementu, to dodajemy go
+    if ( index == -1 ) {
+        this->Insert( element );
+        return;
+    } 
+    
+    // jeżeli znaleziono taki element, to zamieniamy go i naprawiamy stertę
+    this->heap[ index ] = element;
+    this->FixHeap( index );
+}
+
+template <class T> T Heap<T>::GetTop () {
+    if ( this->heap.size() == 0 ) {
+        throw "Heap::GetTop: Sterta jest pusta, lecz próbowano zdjąć z niej element";
+    }
+
+    return this->heap[ 0 ];
 }
 
 template <class T> void Heap<T>::Pop () {
-    if ( heap.size() == 0 ) {
-        throw "Heap::Pop: Pusta sterta";
+    if ( this->heap.size() == 0 ) {
+        throw "Heap::GetTop: Sterta jest pusta, lecz próbowano usunąć z niej element";
     }
 
-    heap[ 0 ] = heap[ heap.size() - 1 ];
-    heap.pop_back();
+    this->heap[ 0 ] = this->heap[ this->heap.size() - 1 ];
+    this->heap.pop_back();
 
-    FixHeap ( 0 );
+    FixHeap( 0 );
 }
 
 template <> bool Heap<MapPoint>::Contains ( MapPoint element ) {
-    int size = heap.size();
+    int size = this->heap.size();
 
     for ( int i = 0; i < size; i++ ) {
-        if ( element.Is( &heap[ i ] ) ) {
+        if ( element.Is( &this->heap[ i ] ) ) {
             return true;
         }
     }
@@ -77,10 +122,10 @@ template <> bool Heap<MapPoint>::Contains ( MapPoint element ) {
 }
 
 template <class T> bool Heap<T>::Contains ( T element ) {
-    int size = heap.size();
+    int size = this->heap.size();
 
     for ( int i = 0; i < size; i++ ) {
-        if ( heap[ i ] == element ) {
+        if ( this->heap[ i ] == element ) {
             return true;
         }
     }
@@ -89,5 +134,7 @@ template <class T> bool Heap<T>::Contains ( T element ) {
 }
 
 template <class T> int Heap<T>::Size () {
-    return heap.size();
+    return this->heap.size();
 }
+
+template class Heap<MapPoint*>;

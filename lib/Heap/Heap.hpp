@@ -32,6 +32,13 @@ class Heap {
          * @param element Element do dodania
          */
         void Insert ( T element );
+        
+        /**
+         * @brief Zamienia element w stercie lub go dodaje
+         * 
+         * @param element Element do dodania lub zamiany
+         */
+        void InsertOrChange ( T element );
 
         /**
          * @brief Zwraca ze sterty najwyżej położony element
@@ -40,11 +47,13 @@ class Heap {
          *     a poza tym vector często jest przenoszony w pamięci, więc wskaźniki
          *     często są nieaktualne
          * @return Najwyżej położony element
+         * @throw Heap::GetTop: Sterta jest pusta, lecz próbowano zdjąć z niej element
          */
         T GetTop ();
 
         /**
          * @brief Usuwa najwyższy element ze sterty
+         * @throw Heap::GetTop: Sterta jest pusta, lecz próbowano usunąć z niej element
          */
         void Pop ();
 
