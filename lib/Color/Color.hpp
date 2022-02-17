@@ -41,10 +41,10 @@ class Color {
          * @param fgColor [int] Kolor tekstu (0-15) 
          * @param bgColor [int] Kolor tła (0-15)
          */
-        static void set ( color foreground = WHITE, color background = BLACK );
+        static void Set ( color foreground = WHITE, color background = BLACK );
 
         /// @brief Resetuje kolory do ustawień oryginalnych
-        static void reset ();
+        static void Reset ();
 
         /// @brief Inicjalizuje statyczną klasę
         static void Initialize ();

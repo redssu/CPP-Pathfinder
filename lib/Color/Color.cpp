@@ -1,11 +1,11 @@
 #include <windows.h>
 #include "Color.hpp"
 
-void Color::set ( color foreground, color background ) {
+void Color::Set ( color foreground, color background ) {
     SetConsoleTextAttribute( hConsole, ( background << 4 ) | foreground );
 }
 
-void Color::reset () {
+void Color::Reset () {
     SetConsoleTextAttribute( hConsole, originalAttributes );
 }
 
