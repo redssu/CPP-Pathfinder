@@ -1,7 +1,6 @@
 #ifndef PathFinder_HPP
 #define PathFinder_HPP
 #include <vector>
-#include "../Color/Color.hpp"
 #include "../MapPoint/MapPoint.hpp"
 #include "../Map/Map.hpp"
 

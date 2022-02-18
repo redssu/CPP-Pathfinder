@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../Color/Color.hpp"
+#include "../Console/Console.hpp"
 #include "Map.hpp"
 
 Map::Map ( int width, int height ) {
@@ -33,9 +33,9 @@ MapPoint* Map::GetMap () { return *this->map; }
 void Map::Print () {
     for ( int y = 0; y < this->height; y++ ) {
         for ( int x = 0; x < this->width; x++ ) {
-            Color::Set( this->map[ y ][ x ].FGColor(), this->map[ y ][ x ].BGColor() );
+            Console::SetColor( this->map[ y ][ x ].FGColor(), this->map[ y ][ x ].BGColor() );
             std::cout << this->map[ y ][ x ].Symbol();
-            Color::Reset();
+            Console::ResetColor();
         }
 
         std::cout << std::endl;
@@ -55,8 +55,8 @@ void Map::AddMapElementDefinition ( MapElementDefinition mapElementDefinition ) 
 void Map::AddMapElementDefinition ( 
     char symbol, 
     float weight, 
-    color fgColor, 
-    color bgColor
+    Color fgColor, 
+    Color bgColor
 ) {
     if ( this->mapElementDefintionsCount >= 16 ) {
         throw "Map::AddMapElementDefinition: Liczba definicji mapy jest większa niż 16";
@@ -110,7 +110,7 @@ MapPoint* Map::GetMapPoint ( int x, int y ) {
     return &this->map[ x ][ y ];
 }
 
-void Map::SetMapPoint( MapPoint mapPoint ) {
+void Map::SetMapPoint ( MapPoint mapPoint ) {
     if ( !this->IsPointInMap( mapPoint ) ) {
         throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
     }
@@ -118,7 +118,7 @@ void Map::SetMapPoint( MapPoint mapPoint ) {
     this->map[ mapPoint.X() ][ mapPoint.Y() ] = mapPoint;
 }
 
-void Map::SetMapPoint( int x, int y, char symbol ) {
+void Map::SetMapPoint ( int x, int y, char symbol ) {
     if ( !this->IsPointInMap( x, y ) ) {
         throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
     }
@@ -135,7 +135,7 @@ void Map::SetMapPoint( int x, int y, char symbol ) {
     );
 }
 
-void Map::SetMapPoint( int x, int y, MapElementDefinition definition ) {
+void Map::SetMapPoint ( int x, int y, MapElementDefinition definition ) {
     if ( !this->IsPointInMap( x, y ) ) {
         throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
     }
@@ -150,7 +150,7 @@ void Map::SetMapPoint( int x, int y, MapElementDefinition definition ) {
     );
 }
 
-void Map::SetMapPoint( int x, int y, char symbol, float weight, color fgColor, color bgColor ) {
+void Map::SetMapPoint ( int x, int y, char symbol, float weight, Color fgColor, Color bgColor ) {
     if ( !this->IsPointInMap( x, y ) ) {
         throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
     }

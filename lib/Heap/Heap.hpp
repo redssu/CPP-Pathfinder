@@ -3,7 +3,7 @@
 #include <vector>
 #include "../MapPoint/MapPoint.hpp"
 
-template <class T>
+template<class T>
 class Heap {
     private:
         /// @brief Sterta

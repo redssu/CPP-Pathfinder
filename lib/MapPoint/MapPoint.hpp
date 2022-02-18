@@ -1,7 +1,6 @@
-#include "../Color/Color.hpp"
-
 #ifndef MapPoint_HPP
 #define MapPoint_HPP
+#include "../Console/Console.hpp"
 
 class MapPoint {
     private:
@@ -18,10 +17,10 @@ class MapPoint {
         char symbol;
 
         /// @brief Kolor symbolu
-        color fgColor;
+        Color fgColor;
 
         /// @brief Kolor tła symbolu
-        color bgColor;
+        Color bgColor;
 
         /// @brief koszt dotarcia od startu do tego punktu
         int gCost; 
@@ -51,15 +50,15 @@ class MapPoint {
         void calculateFCost ();
 
     public:
-        MapPoint();
+        MapPoint ();
 
-        MapPoint( 
+        MapPoint ( 
             int x, 
             int y, 
             float weight = 1.0, 
             char symbol = '.', 
-            color fgColor = Color::WHITE,
-            color bgColor = Color::BLACK
+            Color fgColor = WHITE,
+            Color bgColor = BLACK
         );
 
         // ? Dlaczego jako metody ?
@@ -67,43 +66,43 @@ class MapPoint {
         // ale nie powinny być modyfikowalne
 
         /// @returns Pozycja X punktu
-        int X();
+        int X ();
 
         /// @returns Pozycja Y punktu
-        int Y();
+        int Y ();
 
         /// @returns Waga punktu
-        float Weight();
+        float Weight ();
 
         /// @returns Symbol reprezentujący ten punkt
-        char Symbol();
+        char Symbol ();
 
         /// @returns Kolor symbolu
-        color FGColor();
+        Color FGColor ();
 
         /// @returns Kolor tła symbolu
-        color BGColor();
+        Color BGColor ();
 
         /// @returns Koszt dotarcia od startu do tego punktu.
-        int GCost();
+        int GCost ();
 
         /// @returns (potencjalny) koszt dotarcia od tego punktu do celu.
-        int HCost();
+        int HCost ();
 
         /// @returns "opłacalność" punktu (mniej -> lepiej).
-        int FCost();
+        int FCost ();
 
         /// @brief Ustawia koszt dotarcia od startu do tego punktu.
-        void SetGCost( int gCost );
+        void SetGCost ( int gCost );
 
         /// @brief Ustawia koszt dotarcia od tego punktu do celu.
-        void SetHCost( int fCost );
+        void SetHCost ( int fCost );
 
         /// @brief Ustawia punkt poprzedni w trasie do celu.
         void SetParent ( MapPoint *parent );
 
         /// @returns Punkt poprzedni w trasie do celu.
-        MapPoint* GetParent();
+        MapPoint* GetParent ();
 
         /**
          * @brief Sprawdza czy @p other to ten sam punkt.
@@ -117,11 +116,11 @@ class MapPoint {
         /**
          * @{ @name Przeciążenia operatorów
          */
-        bool operator==( MapPoint *other );
-        bool operator==( MapPoint other );
+        bool operator== ( MapPoint *other );
+        bool operator== ( MapPoint other );
 
-        bool operator!=( MapPoint *other );
-        bool operator!=( MapPoint other );
+        bool operator!= ( MapPoint *other );
+        bool operator!= ( MapPoint other );
 
         bool operator< ( MapPoint *other );
         bool operator< ( MapPoint other );
@@ -129,11 +128,11 @@ class MapPoint {
         bool operator> ( MapPoint *other );
         bool operator> ( MapPoint other );
 
-        bool operator<=( MapPoint *other );
-        bool operator<=( MapPoint other );
+        bool operator<= ( MapPoint *other );
+        bool operator<= ( MapPoint other );
 
-        bool operator>=( MapPoint *other );
-        bool operator>=( MapPoint other );
+        bool operator>= ( MapPoint *other );
+        bool operator>= ( MapPoint other );
         /**
          * @}
          */

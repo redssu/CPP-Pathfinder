@@ -1,20 +1,20 @@
 #include <windows.h>
-#include "Color.hpp"
+#include "Console.hpp"
 
-void Color::Set ( color foreground, color background ) {
+void Console::SetColor ( Color foreground, Color background ) {
     SetConsoleTextAttribute( hConsole, ( background << 4 ) | foreground );
 }
 
-void Color::Reset () {
+void Console::ResetColor () {
     SetConsoleTextAttribute( hConsole, originalAttributes );
 }
 
-void Color::Initialize () {
+void Console::Initialize () {
     // ustaw domyślne wartości atrybutów konsoli
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo( hConsole, &csbi );
     originalAttributes = csbi.wAttributes;
 }
 
-int Color::originalAttributes = 0;
-void* Color::hConsole = GetStdHandle( STD_OUTPUT_HANDLE );
+int Console::originalAttributes = 0;
+void* Console::hConsole = GetStdHandle( STD_OUTPUT_HANDLE );

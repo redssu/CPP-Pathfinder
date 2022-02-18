@@ -2,7 +2,7 @@
 #include "Heap.hpp"
 #include "../MapPoint/MapPoint.hpp"
 
-template <class T> void Heap<T>::Swap ( int index1, int index2 ) {
+template<class T> void Heap<T>::Swap ( int index1, int index2 ) {
     if ( index1 < 0 || index1 >= heap.size() || index2 < 0 || index2 >= heap.size() ) {
         throw "Heap::Swap: Indeks elementu jest nieprawidłowy";
     }
@@ -12,7 +12,7 @@ template <class T> void Heap<T>::Swap ( int index1, int index2 ) {
     this->heap[ index2 ] = temp;
 }
 
-template <class T> void Heap<T>::FixHeap ( int index ) {
+template<class T> void Heap<T>::FixHeap ( int index ) {
     int lowestIndex = index;
 
     int leftChildIndex = lowestIndex * 2 + 1;
@@ -32,7 +32,7 @@ template <class T> void Heap<T>::FixHeap ( int index ) {
     }
 }
 
-template <class T> void Heap<T>::Insert ( T element ) {
+template<class T> void Heap<T>::Insert ( T element ) {
     this->heap.push_back( element );
 
     int index = this->heap.size() - 1;
@@ -44,7 +44,7 @@ template <class T> void Heap<T>::Insert ( T element ) {
     }
 }
 
-template <> void Heap<MapPoint>::InsertOrChange ( MapPoint element ) {
+template<> void Heap<MapPoint>::InsertOrChange ( MapPoint element ) {
     int index = -1;
     int size = this->heap.size();
 
@@ -67,7 +67,7 @@ template <> void Heap<MapPoint>::InsertOrChange ( MapPoint element ) {
     this->FixHeap( index );
 }
 
-template <class T> void Heap<T>::InsertOrChange ( T element ) {
+template<class T> void Heap<T>::InsertOrChange ( T element ) {
     int index = -1;
     int size = this->heap.size();
 
@@ -90,7 +90,7 @@ template <class T> void Heap<T>::InsertOrChange ( T element ) {
     this->FixHeap( index );
 }
 
-template <class T> T Heap<T>::GetTop () {
+template<class T> T Heap<T>::GetTop () {
     if ( this->heap.size() == 0 ) {
         throw "Heap::GetTop: Sterta jest pusta, lecz próbowano zdjąć z niej element";
     }
@@ -98,7 +98,7 @@ template <class T> T Heap<T>::GetTop () {
     return this->heap[ 0 ];
 }
 
-template <class T> void Heap<T>::Pop () {
+template<class T> void Heap<T>::Pop () {
     if ( this->heap.size() == 0 ) {
         throw "Heap::GetTop: Sterta jest pusta, lecz próbowano usunąć z niej element";
     }
@@ -109,7 +109,7 @@ template <class T> void Heap<T>::Pop () {
     FixHeap( 0 );
 }
 
-template <> bool Heap<MapPoint>::Contains ( MapPoint element ) {
+template<> bool Heap<MapPoint>::Contains ( MapPoint element ) {
     int size = this->heap.size();
 
     for ( int i = 0; i < size; i++ ) {
@@ -121,7 +121,7 @@ template <> bool Heap<MapPoint>::Contains ( MapPoint element ) {
     return false;
 }
 
-template <class T> bool Heap<T>::Contains ( T element ) {
+template<class T> bool Heap<T>::Contains ( T element ) {
     int size = this->heap.size();
 
     for ( int i = 0; i < size; i++ ) {
@@ -133,7 +133,7 @@ template <class T> bool Heap<T>::Contains ( T element ) {
     return false;
 }
 
-template <class T> int Heap<T>::Size () {
+template<class T> int Heap<T>::Size () {
     return this->heap.size();
 }
 

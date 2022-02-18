@@ -1,6 +1,5 @@
 #include <cmath>
 #include <vector>
-#include "../Color/Color.hpp"
 #include "../MapPoint/MapPoint.hpp"
 #include "../Map/Map.hpp"
 #include "../Heap/Heap.hpp"
@@ -64,21 +63,21 @@ std::vector<MapPoint*> PathFinder::GetPointNeighbours ( MapPoint* point ) {
     return neighbours;
 }
 
-PathFinder::PathFinder( Map* map, MapPoint* start, MapPoint* end ) {
+PathFinder::PathFinder ( Map* map, MapPoint* start, MapPoint* end ) {
     this->map = map;
     this->start = start;
     this->end = end;
 }
 
-void PathFinder::SetStart( MapPoint* point ) {
+void PathFinder::SetStart ( MapPoint* point ) {
     this->start = point;
 }
 
-void PathFinder::SetEnd( MapPoint* point ) {
+void PathFinder::SetEnd ( MapPoint* point ) {
     this->end = point;
 }
 
-std::vector<MapPoint*> PathFinder::FindPath() {
+std::vector<MapPoint*> PathFinder::FindPath () {
     if ( !this->map->IsPointInMap( this->start ) ) {
         throw "PathFinder::FindPath: Punkt startowy nie znajduje się na mapie";
     }

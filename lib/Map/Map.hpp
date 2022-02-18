@@ -1,14 +1,14 @@
 #ifndef Map_HPP
 #define Map_HPP
 #include <iostream>
-#include "../Color/Color.hpp"
+#include "../Console/Console.hpp"
 #include "../MapPoint/MapPoint.hpp"
 
 struct MapElementDefinition {
     char symbol;
     float weight;
-    color fgColor;
-    color bgColor;
+    Color fgColor;
+    Color bgColor;
 };
 
 class Map {
@@ -74,8 +74,8 @@ class Map {
         void AddMapElementDefinition ( 
             char symbol, 
             float weight = 1.0, 
-            color fgColor = Color::WHITE, 
-            color bgColor = Color::BLACK 
+            Color fgColor = WHITE, 
+            Color bgColor = BLACK 
         );
 
         /**
@@ -178,8 +178,8 @@ class Map {
             int y, 
             char symbol, 
             float weight, 
-            color fgColor = Color::WHITE, 
-            color bgColor = Color::BLACK
+            Color fgColor = WHITE, 
+            Color bgColor = BLACK
         );
 
         /**
