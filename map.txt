@@ -1,0 +1,12 @@
+width: 7;
+height: 5;
+
+def: '.', 1.0, @BRIGHT_GREEN, @BRIGHT_GREEN; # trawa
+def: '#', 100, @BRIGHT_BLACK, @BRIGHT_BLACK; # ściana
+
+$map:
+#######
+#....E#
+#.....#
+#S....#
+#######

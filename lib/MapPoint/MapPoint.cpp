@@ -2,8 +2,10 @@
 #include "MapPoint.hpp"
 
 #define INFINITY 2147483647;
-#define NULL 0
 
+#ifndef NULL
+#define NULL 0
+#endif
 
 /**
  * Prywatne

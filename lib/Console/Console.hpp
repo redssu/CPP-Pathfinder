@@ -1,5 +1,6 @@
 #ifndef Console_HPP
 #define Console_HPP
+#include <string>
 
 /// @brief Enum zawierający kolory konsoli
 enum Color {
@@ -43,6 +44,15 @@ class Console {
 
         /// @brief Inicjalizuje statyczną klasę
         static void Initialize ();
+
+        /**
+         * @brief Zamienia nazwę koloru @p na wartość Enum
+         * 
+         * @param colorName Nazwa koloru
+         * @return Color Wartość Enum
+         * @throw Console::GetColor: Nie znaleziono koloru z taką nazwą.
+         */
+        static Color GetColor ( std::string colorName );
 };
 
 #endif
