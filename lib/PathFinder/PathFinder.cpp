@@ -4,6 +4,7 @@
 #include "../Map/Map.hpp"
 #include "../Heap/Heap.hpp"
 #include "../PathFinder/PathFinder.hpp"
+#include "../PathFinderException/PathFinderException.hpp"
 
 int PathFinder::CalculateHCost ( MapPoint* point1, MapPoint* point2 ) {
     int horizontalDistance = abs( point1->X() - point2->X() );
@@ -79,11 +80,11 @@ void PathFinder::SetEnd ( MapPoint* point ) {
 
 std::vector<MapPoint*> PathFinder::FindPath () {
     if ( !this->map->IsPointInMap( this->start ) ) {
-        throw "PathFinder::FindPath: Punkt startowy nie znajduje się na mapie";
+        throw PathFinderException( "PathFinder::FindPath", "Punkt startowy nie znajduje się na mapie" );
     }
 
     if ( !this->map->IsPointInMap( this->end ) ) {
-        throw "PathFinder::FindPath: Punkt końcowy nie znajduje się na mapie";
+        throw PathFinderException( "PathFinder::FindPath", "Punkt końcowy nie znajduje się na mapie" );
     }
 
     // wierzchołki odwiedzone
@@ -109,7 +110,7 @@ std::vector<MapPoint*> PathFinder::FindPath () {
                 current = current->GetParent();
 
                 if ( !this->map->IsPointInMap( current ) ) {
-                    throw "PathFinder::FindPath: Nie udało się odtworzyć ścieżki";
+                    throw PathFinderException( "PathFinder::FindPath", "Nie udało się odtworzyć ścieżki" );
                 }
 
                 path.push_back( current );
@@ -157,5 +158,5 @@ std::vector<MapPoint*> PathFinder::FindPath () {
         }
     }
 
-    throw "PathFinder::FindPath: Nie udało się odnaleźć ścieżki";
+    throw PathFinderException( "PathFinder::FindPath", "Nie udało się odnaleźć ścieżki" );
 }

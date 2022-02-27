@@ -1,17 +1,18 @@
-#include "../Console/Console.hpp"
-#include "../MapPoint/MapPoint.hpp"
-#include "../Map/Map.hpp"
-#include "./MapLoader.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <map>
+#include "../Console/Console.hpp"
+#include "../MapPoint/MapPoint.hpp"
+#include "../Map/Map.hpp"
+#include "./MapLoader.hpp"
+#include "../PathFinderException/PathFinderException.hpp"
 
 MapLoader::MapLoader ( std::string fileName ) {
     this->file.open( fileName );
 
     if ( !this->file.good() ) {
-        throw std::runtime_error( "MapLoader::MapLoader: Nie udało się otworzyć pliku." );
+        throw PathFinderException( "MapLoader::MapLoader", "Nie udało się otworzyć pliku." );
     }
 }
 
@@ -34,7 +35,7 @@ std::string MapLoader::TokenTypeToStr ( TokenType type ) {
 
 void MapLoader::Tokenize () {
     if ( !this->file.good() ) {
-        throw "MapLoader::Tokenize: Nie udało się otworzyć pliku mapy.";
+        throw PathFinderException( "MapLoader::Tokenize", "Nie udało się otworzyć pliku mapy." );
     }
 
     do {
@@ -102,7 +103,7 @@ void MapLoader::Tokenize () {
         this->file.seekg( -1, std::ios::cur );
         char previousChar = this->file.get();
 
-        throw "MapLoader::Tokenize: Nieoczekiwany znak '" + std::string( 1, currentChar ) + "' na pozycji " + std::to_string( currentPosition ) + " (obok: '" + std::string( 1, previousChar ) + "')";
+        throw PathFinderException( (std::string) "MapLoader::Tokenize", (std::string) ( "Nieoczekiwany znak '" + std::string( 1, currentChar ) + "' na pozycji " + std::to_string( currentPosition ) + " (obok", "'" + std::string( 1, previousChar ) + "')" ) );
     }
     while ( this->file.good() );
 
@@ -205,7 +206,7 @@ void MapLoader::ParseChar () {
         this->tokens.push_back( { CHAR, character } ); // <-- dodaj token
     }
     else {
-        throw "MapLoader::Char: Oczekiwano zamykającego ' na pozycji " + std::to_string( this->file.tellg() );
+        throw PathFinderException( "MapLoader::Char", "Oczekiwano zamykającego ' na pozycji " + std::to_string( this->file.tellg() ) + "." );
     }
 }
 
@@ -268,7 +269,7 @@ void MapLoader::ExpectSequence ( std::string sequence ) {
     for ( std::string::size_type i = 0; i < sequence.size(); i++ ) {
         // sprawdź, czy znak na obecnej pozycji pliku to obecny znak w sekwencji
         if ( !this->file.good() || this->file.peek() != sequence[ i ] ) {
-            throw "MapLoader::ExpectSequence: Oczekiwano znaku '" + std::to_string( sequence[ i ] ) + "'.";
+            throw PathFinderException( "MapLoader::ExpectSequence", "Oczekiwano znaku '" + std::to_string( sequence[ i ] ) + "'." );
         }
 
         // jeśli tak, to zjedz go
@@ -281,7 +282,7 @@ void MapLoader::ExpectSequence ( std::string sequence ) {
 Token MapLoader::GetToken () {
     // jeśli nie ma już tokenów, to zwróć pusty token
     if ( this->TokensLeft() == 0 ) {
-        throw "MapLoader::GetToken: Nieoczekiwany koniec listy tokenów.";
+        throw PathFinderException( "MapLoader::GetToken", "Nieoczekiwany koniec listy tokenów." );
     }
 
     // zwróć token z obecnej pozycji
@@ -298,13 +299,13 @@ void MapLoader::ExpectToken ( TokenType type ) {
     Token token = this->GetToken();
 
     if ( token.type != type ) {
-        throw "MapLoader::ExpectToken: Nieoczekiwany token '" + TokenTypeToStr( token.type ) + "'. Oczekiwano tokena typu '" + TokenTypeToStr( type ) + "'.";
+        throw PathFinderException( "MapLoader::ExpectToken", "Nieoczekiwany token '" + TokenTypeToStr( token.type ) + "'. Oczekiwano tokena typu '" + TokenTypeToStr( type ) + "'." );
     }
 }
 
 TokenType MapLoader::PeekTokenType () {
     if ( this->TokensLeft() < 2 ) {
-        throw "MapLoader::PeekTokenType: Nieoczekiwany koniec listy tokenów.";
+        throw PathFinderException( "MapLoader::PeekTokenType", "Nieoczekiwany koniec listy tokenów." );
     }
 
     return this->tokens[ this->currentIndex + 1 ].type;
@@ -312,7 +313,7 @@ TokenType MapLoader::PeekTokenType () {
 
 void MapLoader::ConsumeToken () {
     if ( this->TokensLeft() == 0 ) {
-        throw "MapLoader::ConsumeToken: Nieoczekiwany koniec listy tokenów.";
+        throw PathFinderException( "MapLoader::ConsumeToken", "Nieoczekiwany koniec listy tokenów." );
     }
 
     this->currentIndex++;
@@ -346,13 +347,13 @@ Map MapLoader::Interpret () {
             return this->InterpretMap( variables, mapElementDefinitions, mapElementDefinitionsCount );
         }
         else {
-            throw "MapLoader::Interpret: Nieoczekiwany token '" + TokenTypeToStr( currentToken.type ) + "'. Oczekiwano tokena typu '" + TokenTypeToStr( IDENTIFIER ) + "'.";
+            throw PathFinderException( "MapLoader::Interpret", "Nieoczekiwany token '" + TokenTypeToStr( currentToken.type ) + "'. Oczekiwano tokena typu '" + TokenTypeToStr( IDENTIFIER ) + "'." );
         }
 
         currentToken = this->GetToken();
     }
 
-    throw "MapLoader::Interpret: Nieoczekiwany koniec pliku.";
+    throw PathFinderException( "MapLoader::Interpret", "Nieoczekiwany koniec listy tokenów." );
 }
 
 void MapLoader::InterpretVariable ( std::string name, std::map<std::string, float>* variables ) {
@@ -400,7 +401,7 @@ void MapLoader::InterpretDefinition ( MapElementDefinition* definitions, int* de
     this->ConsumeToken();
 
     if ( *definitionCount > 15 ) {
-        throw "MapLoader::InterpretDefinition: Za dużo definicji elementów mapy.";
+        throw PathFinderException( "MapLoader::InterpretDefinition", "Za dużo definicji elementów mapy." );
     }
 
     definitions[ (*definitionCount)++ ] = { symbol, weight, color, bgColor };
@@ -414,11 +415,11 @@ Map MapLoader::InterpretMap (
     this->ConsumeToken();
     
     if ( variables.count( "width" ) == 0 ) {
-        throw "MapLoader::InterpretMap: Brak zmiennej 'width'.";
+        throw PathFinderException( "MapLoader::InterpretMap", "Brak zmiennej 'width'." );
     }
 
     if ( variables.count( "height" ) == 0 ) {
-        throw "MapLoader::InterpretMap: Brak zmiennej 'height'.";
+        throw PathFinderException( "MapLoader::InterpretMap", "Brak zmiennej 'height'." );
     }
 
     int width = (int) variables[ "width" ];
@@ -434,14 +435,14 @@ Map MapLoader::InterpretMap (
         map.GetMapElementDefinition( 'S' );
     }
     catch ( std::string error ) {
-        throw "MapLoader::InterpretMap: Nie znaleziono definicji punktu startowego o symbolu 'S'.";
+        throw PathFinderException( "MapLoader::InterpretMap", "Nie znaleziono definicji punktu startowego o symbolu 'S'." );
     }
 
     try {
         map.GetMapElementDefinition( 'E' );
     }
     catch ( std::string error ) {
-        throw "MapLoader::InterpretMap: Nie znaleziono definicji punktu koncowego o symbolu 'E'.";
+        throw PathFinderException( "MapLoader::InterpretMap", "Nie znaleziono definicji punktu koncowego o symbolu 'E'." );
     }
 
     for ( int row = 0; row < height; row++ ) {
@@ -462,7 +463,7 @@ Map MapLoader::InterpretMap (
         char newline = this->GetToken().value[ 0 ];
 
         if ( newline != '\n' ) {
-            throw "MapLoader::InterpretMap: Nieoczekiwany token znaku '" + std::to_string( newline ) + "'. Oczekiwano tokena znaku nowej linii.";
+            throw PathFinderException( "MapLoader::InterpretMap", "Nieoczekiwany token znaku '" + std::to_string( newline ) + "'. Oczekiwano tokena znaku nowej linii." );
         }
 
         this->ConsumeToken();

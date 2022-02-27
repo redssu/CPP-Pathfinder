@@ -105,11 +105,11 @@ class MapPoint {
         MapPoint* GetParent ();
 
         /**
-         * @brief Sprawdza czy @p other to ten sam punkt.
+         * @brief Sprawdza czy inny punkt to ten sam punkt.
          * 
          * @details Sprawdzane jest równość pozycji X i Y.
          * @param other Punkt do porównania
-         * @return true | false
+         * @return bool
          */
         bool Is ( MapPoint *other );
         

@@ -4,6 +4,7 @@
 #include "lib/Map/Map.hpp"
 #include "lib/PathFinder/PathFinder.hpp"
 #include "lib/MapLoader/MapLoader.hpp"
+#include "lib/PathFinderException/PathFinderException.hpp"
 
 int main () {
     Console::Initialize();
@@ -13,18 +14,16 @@ int main () {
         mapLoader.Tokenize();
         mapLoader.Interpret();
     }
-    catch ( std::string error ) {
+    catch ( PathFinderException exception ) {
         Console::SetColor( BRIGHT_WHITE, BRIGHT_RED );
         std::cout << "Wystapil blad:";
-        Console::SetColor( BRIGHT_RED );
-        std::cout << " " << error << "\n";
-        Console::ResetColor();
-    }
-    catch ( const char* error ) {
-        Console::SetColor( BRIGHT_WHITE, BRIGHT_RED );
-        std::cout << "Wystapil blad:";
-        Console::SetColor( BRIGHT_RED );
-        std::cout << " " << error << "\n";
+
+        Console::SetColor( BRIGHT_RED, BLACK );
+        std::cout << " " << exception.GetFunctionName();
+        
+        Console::SetColor( RED, BLACK );
+        std::cout << ": " << exception.GetMessage();
+
         Console::ResetColor();
     }
     

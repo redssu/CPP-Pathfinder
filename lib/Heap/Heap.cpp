@@ -1,10 +1,11 @@
 #include <vector>
 #include "Heap.hpp"
 #include "../MapPoint/MapPoint.hpp"
+#include "../PathFinderException/PathFinderException.hpp"
 
 template<class T> void Heap<T>::Swap ( int index1, int index2 ) {
     if ( index1 < 0 || index1 >= heap.size() || index2 < 0 || index2 >= heap.size() ) {
-        throw "Heap::Swap: Indeks elementu jest nieprawidłowy";
+        throw PathFinderException( "Heap::Swap", "Indeks elementu jest nieprawidłowy" );
     }
 
     T temp = this->heap[ index1 ];
@@ -92,7 +93,7 @@ template<class T> void Heap<T>::InsertOrChange ( T element ) {
 
 template<class T> T Heap<T>::GetTop () {
     if ( this->heap.size() == 0 ) {
-        throw "Heap::GetTop: Sterta jest pusta, lecz próbowano zdjąć z niej element";
+        throw PathFinderException( "Heap::GetTop", "Sterta jest pusta, lecz próbowano zdjąć z niej element" );
     }
 
     return this->heap[ 0 ];
@@ -100,7 +101,7 @@ template<class T> T Heap<T>::GetTop () {
 
 template<class T> void Heap<T>::Pop () {
     if ( this->heap.size() == 0 ) {
-        throw "Heap::GetTop: Sterta jest pusta, lecz próbowano usunąć z niej element";
+        throw PathFinderException( "Heap::GetTop", "Sterta jest pusta, lecz próbowano usunąć z niej element" );
     }
 
     this->heap[ 0 ] = this->heap[ this->heap.size() - 1 ];

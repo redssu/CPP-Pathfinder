@@ -1,5 +1,5 @@
-#include "../Console/Console.hpp"
 #include "MapPoint.hpp"
+#include "../Console/Console.hpp"
 
 #define INFINITY 2147483647;
 

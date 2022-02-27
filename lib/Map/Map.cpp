@@ -1,22 +1,23 @@
 #include <iostream>
-#include "../Console/Console.hpp"
 #include "Map.hpp"
+#include "../Console/Console.hpp"
+#include "../PathFinderException/PathFinderException.hpp"
 
 Map::Map ( int width, int height ) {
     if ( width < 1 ) {
-        throw "Map::Map: Szerokość mapy jest mniejsza niż 1";
+        throw PathFinderException( "Map::Map", "Szerokość mapy jest mniejsza niż 1" );
     }
 
     if ( height < 1 ) {
-        throw "Map::Map: Wysokość mapy jest mniejsza niż 1";
+        throw PathFinderException( "Map::Map", "Wysokość mapy jest mniejsza niż 1" );
     }
 
     if ( width > 32 ) {
-        throw "Map::Map: Szerokość mapy jest większa niż 32";
+        throw PathFinderException( "Map::Map", "Szerokość mapy jest większa niż 32" );
     }
 
     if ( height > 32 ) {
-        throw "Map::Map: Wysokość mapy jest większa niż 32";
+        throw PathFinderException( "Map::Map", "Wysokość mapy jest większa niż 32" );
     }
 
     this->width = width;
@@ -46,7 +47,7 @@ void Map::Print () {
 
 void Map::AddMapElementDefinition ( MapElementDefinition mapElementDefinition ) {
     if ( this->mapElementDefintionsCount >= 16 ) {
-        throw "Map::AddMapElementDefinition: Liczba definicji mapy jest większa niż 16";
+        throw PathFinderException( "Map::AddMapElementDefinition", "Liczba definicji mapy jest większa niż 16" );
     }
 
     this->mapElementDefinitions[ this->mapElementDefintionsCount++ ] = mapElementDefinition;
@@ -59,7 +60,7 @@ void Map::AddMapElementDefinition (
     Color bgColor
 ) {
     if ( this->mapElementDefintionsCount >= 16 ) {
-        throw "Map::AddMapElementDefinition: Liczba definicji mapy jest większa niż 16";
+        throw PathFinderException( "Map::AddMapElementDefinition", "Liczba definicji mapy jest większa niż 16" );
     }
 
     this->mapElementDefinitions[ this->mapElementDefintionsCount++ ] = { 
@@ -72,7 +73,7 @@ void Map::AddMapElementDefinition (
 
 MapElementDefinition Map::GetMapElementDefinition ( int index ) {
     if ( index < 0 || index >= this->mapElementDefintionsCount ) {
-        throw "Map::GetMapElementDefinition: Nie znaleziono definicji elementu mapy";
+        throw PathFinderException( "Map::GetMapElementDefinition", "Nie znaleziono definicji elementu mapy" );
     }
 
     return this->mapElementDefinitions[ index ];
@@ -85,7 +86,7 @@ MapElementDefinition Map::GetMapElementDefinition ( char symbol ) {
         }
     }
 
-    throw "Map::GetMapElementDefinition: Nie znaleziono definicji elementu mapy";
+    throw PathFinderException( "Map::GetMapElementDefinition", "Nie znaleziono definicji elementu mapy" );
 }
 
 /* Punkty */
@@ -104,7 +105,7 @@ bool Map::IsPointInMap ( MapPoint* point ) {
 
 MapPoint* Map::GetMapPoint ( int x, int y ) {
     if ( !this->IsPointInMap( x, y ) ) {
-        throw "Map::GetMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::GetMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     return &this->map[ x ][ y ];
@@ -112,7 +113,7 @@ MapPoint* Map::GetMapPoint ( int x, int y ) {
 
 void Map::SetMapPoint ( MapPoint mapPoint ) {
     if ( !this->IsPointInMap( mapPoint ) ) {
-        throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::SetMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     this->map[ mapPoint.X() ][ mapPoint.Y() ] = mapPoint;
@@ -120,7 +121,7 @@ void Map::SetMapPoint ( MapPoint mapPoint ) {
 
 void Map::SetMapPoint ( int x, int y, char symbol ) {
     if ( !this->IsPointInMap( x, y ) ) {
-        throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::SetMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     MapElementDefinition definition = this->GetMapElementDefinition( symbol );
@@ -137,7 +138,7 @@ void Map::SetMapPoint ( int x, int y, char symbol ) {
 
 void Map::SetMapPoint ( int x, int y, MapElementDefinition definition ) {
     if ( !this->IsPointInMap( x, y ) ) {
-        throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::SetMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     this->map[ x ][ y ] = MapPoint( 
@@ -152,7 +153,7 @@ void Map::SetMapPoint ( int x, int y, MapElementDefinition definition ) {
 
 void Map::SetMapPoint ( int x, int y, char symbol, float weight, Color fgColor, Color bgColor ) {
     if ( !this->IsPointInMap( x, y ) ) {
-        throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::SetMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     this->map[ x ][ y ] = MapPoint( 
@@ -167,7 +168,7 @@ void Map::SetMapPoint ( int x, int y, char symbol, float weight, Color fgColor, 
 
 void Map::RemoveMapPoint ( int x, int y ) {
     if ( !this->IsPointInMap( x, y ) ) {
-        throw "Map::RemoveMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::RemoveMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     this->map[ x ][ y ] = MapPoint();
@@ -175,7 +176,7 @@ void Map::RemoveMapPoint ( int x, int y ) {
 
 void Map::RemoveMapPoint ( MapPoint mapPoint ) {
     if ( !this->IsPointInMap( mapPoint ) ) {
-        throw "Map::RemoveMapPoint: Nieprawidłowe współrzędne punktu";
+        throw PathFinderException( "Map::RemoveMapPoint", "Nieprawidłowe współrzędne punktu" );
     }
 
     this->map[ mapPoint.X() ][ mapPoint.Y() ] = MapPoint();

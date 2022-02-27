@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <string>
 #include "Console.hpp"
+#include "../PathFinderException/PathFinderException.hpp"
 
 void Console::SetColor ( Color foreground, Color background ) {
     SetConsoleTextAttribute( hConsole, ( background << 4 ) | foreground );
@@ -35,7 +36,7 @@ Color Console::GetColor ( std::string colorName ) {
     if ( colorName == "BRIGHT_YELLOW" ) { return BRIGHT_YELLOW; }
     if ( colorName == "BRIGHT_WHITE" ) { return BRIGHT_WHITE; }
 
-    throw Console::GetColor( "Console::GetColor: Nie znaleziono koloru z taką nazwą." );
+    throw PathFinderException( "Console::GetColor", "Nie znaleziono koloru z taką nazwą." );
 }
 
 int Console::originalAttributes = 0;

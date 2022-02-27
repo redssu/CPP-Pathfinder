@@ -50,7 +50,7 @@ class Console {
          * 
          * @param colorName Nazwa koloru
          * @return Color Wartość Enum
-         * @throw Console::GetColor: Nie znaleziono koloru z taką nazwą.
+         * @throw PathFinderException: Nie znaleziono koloru z taką nazwą.
          */
         static Color GetColor ( std::string colorName );
 };

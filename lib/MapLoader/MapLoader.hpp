@@ -33,11 +33,8 @@ class MapLoader {
         /// @brief Lista tokenów
         std::vector<Token> tokens;
 
-        /// @brief Wskaźnik do mapy
-        Map* map;
-
         /**
-         * Sprawdza czy podany znak jest znakiem białym
+         * @brief Sprawdza czy podany znak jest znakiem białym
          * 
          * @param character Znak do sprawdzenia
          * @return true jeśli znak jest biały
@@ -45,7 +42,7 @@ class MapLoader {
         static bool IsWhitespace ( char character );
 
         /**
-         * Sprawdza czy podany znak jest alfabetyczny
+         * @brief Sprawdza czy podany znak jest alfabetyczny
          * 
          * @param character Znak do sprawdzenia
          * @return true jeśli znak jest alfabetyczny
@@ -53,7 +50,7 @@ class MapLoader {
         static bool IsAlphabetic ( char character );
 
         /**
-         * Sprawdza czy podany znak jest alfabetyczny (tylko duże litery)
+         * @brief Sprawdza czy podany znak jest alfabetyczny (tylko duże litery)
          * 
          * @param character Znak do sprawdzenia
          * @return true jeśli znak jest alfabetyczny 
@@ -61,7 +58,7 @@ class MapLoader {
         static bool IsAlphabeticUppercase ( char character );
 
         /**
-         * Sprawdza czy podany znak jest alfabetyczny (tylko małe litery)
+         * @brief Sprawdza czy podany znak jest alfabetyczny (tylko małe litery)
          * 
          * @param character Znak do sprawdzenia
          * @return true jeśli znak jest alfabetyczny
@@ -69,7 +66,7 @@ class MapLoader {
         static bool IsAlphabeticLowercase ( char character );
 
         /**
-         * Sprawdza czy podany znak jest cyfrą
+         * @brief Sprawdza czy podany znak jest cyfrą
          * 
          * @param character Znak do sprawdzenia
          * @return true jeśli znak jest cyfrą
@@ -82,7 +79,11 @@ class MapLoader {
         /// @brief Przetwarza token typu NUMBER
         void ParseNumber ();
 
-        /// @brief Przetwarza token typu CHAR
+        /**
+         * @brief Przetwarza token typu CHAR
+         * 
+         * @throw PathFinderException: Oczekiwano zamykającego ' na pozycji %s.
+         */
         void ParseChar ();
 
         /// @brief Przetwarza token typu IDENTIFIER
@@ -98,10 +99,10 @@ class MapLoader {
         void SkipComment ();
 
         /**
-         * @brief Sprawdza czy podana sekwencja jest poprawna
+         * @brief Sprawdza, czy podana sekwencja jest poprawna
          * 
          * @param sequence Sekwencja do sprawdzenia
-         * @throw MapLoader::ExpectSequence: Oczekiwano znaku '%s'
+         * @throw PathFinderException: Oczekiwano znaku '%s'
          */
         void ExpectSequence ( std::string sequence );
 
@@ -110,66 +111,74 @@ class MapLoader {
         int currentIndex;
         
         /**
-         * @brief Funkcja pobierająca obecny token
+         * @brief Pobiera obecny token
          * 
          * @return Token Token
-         * @throw MapLoader::GetToken: Nieoczekiwany koniec listy tokenów.
+         * @throw PathFinderException: Nieoczekiwany koniec listy tokenów.
          */
         Token GetToken ();
 
         /**
-         * @brief Funkcja zwracająca liczbę pozostałych tokenów
+         * @brief Zwraca liczbę pozostałych tokenów
          * 
          * @return int
          */
         int TokensLeft ();
 
         /**
-         * @brief Funkcja sprawdzająca, czy token jest konkretnego typu. Jeśli nie, wyrzuca wyjątek
+         * @brief Sprawdza, czy token jest konkretnego typu. Jeśli nie, wyrzuca wyjątek
          * 
          * @param type Typ tokena
-         * @throw MapLoader::ExpectToken: Nieoczekiwany token '%s'. Oczekiwano tokena typu '%s'.
+         * @throw PathFinderException: Nieoczekiwany token '%s'. Oczekiwano tokena typu '%s'.
          */
         void ExpectToken ( TokenType type );
 
         /**
-         * @brief Funkcja podglądająca typ następnego tokena
+         * @brief podgląda typ następnego tokena
          * 
          * @return TokenType
-         * @throw MapLoader::PeekTokenType: Nieoczekiwany koniec listy tokenów.
+         * @throw PathFinderException: Nieoczekiwany koniec listy tokenów.
          */
         TokenType PeekTokenType ();
 
         /**
-         * @brief Funkcja zjadająca obecny token
+         * @brief Zjadaja obecny token
          * 
-         * @throw MapLoader::ConsumeToken: Nieoczekiwany koniec listy tokenów.
+         * @throw PathFinderException: Nieoczekiwany koniec listy tokenów.
          */
         void ConsumeToken ();
 
         /**
-         * @brief Funkcja interpretująca zmienną
+         * @brief Interpretuje zmienną
          * 
          * @param name Nazwa zmiennej
          * @param variables Wskaźnik do mapy zmiennych
+         * @throw PathFinderException
          */
         void InterpretVariable ( std::string name, std::map<std::string, float>* variables );
 
         /**
-         * @brief Funkcja interpretująca definicję
+         * @brief Interpretuje definicję
          * 
          * @param definitions Tablica definicji
          * @param definitionCount Wskaźnik do licznika definicji
+         * @throw PathFinderException: Za dużo definicji elementów mapy.
+         * @throw PathFinderException
          */
         void InterpretDefinition ( MapElementDefinition* definitions, int* definitionCount );
 
         /**
-         * @brief Funkcja interpretująca mapę
+         * @brief Interpretuje mapę
          * 
          * @param variables Mapa zmiennych
          * @param definitions Tablica definicji
          * @param definitionCount Licznik definicji
          * @return Obiekt mapy
+         * @throw PathFinderException: Brak zmiennej 'width'.
+         * @throw PathFinderException: Brak zmiennej 'height'.
+         * @throw PathFinderException: Nie znaleziono definicji punktu startowego o symbolu 'S'.
+         * @throw PathFinderException: Nie znaleziono definicji punktu końcowego o symbolu 'E'.
+         * @throw PathFinderException: Nieoczekiwany token znaku '%s'. Oczekiwano tokena znaku nowej linii.
          */
         Map InterpretMap ( std::map<std::string, float> variables, MapElementDefinition* definitions, int definitionCount );
 
@@ -178,27 +187,33 @@ class MapLoader {
          * @brief Konstruktor, ładuje plik
          * 
          * @param fileName Nazwa pliku
-         * @throw MapLoader::MapLoader: Nie udało się otworzyć pliku.
+         * @throw PathFinderException: Nie udało się otworzyć pliku.
          */
         MapLoader ( std::string fileName ); 
 
         /**
          * @brief Tokenizuje plik
          * 
-         * @throw Dużo...
+         * @throw PathFinderException
          */
         void Tokenize ();
 
         /**
          * @brief Interpretuje listę tokenów
          * 
-         * expression = variable | map | definition
-         * variable = identifier, colon, number, semicolon
-         * map = mapstart, char, mapend
-         * definition = identifier, colon, char, comma, number, comma, color, comma, color, semicolon
+         * @return Zinterpretowana mapa
+         * @throw PathFinderException: Nieoczekiwany token '%s'. Oczekiwano tokena typu '%s'.
+         * @throw PathFinderException: Nieoczekiwany koniec listy tokenów.
+         * @throw PathFinderException
          */
         Map Interpret ();
 
+        /**
+         * @brief Przetwarza typ tokenu na nazwę typu tokenu przyjazną człowiekowi
+         * 
+         * @param type Typ tokena
+         * @return Nazwa tokenu przyjazna człowiekowi
+         */
         static std::string TokenTypeToStr ( TokenType type );
 };
 

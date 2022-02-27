@@ -13,10 +13,10 @@ struct MapElementDefinition {
 
 class Map {
     private:
-        /// @brief Definicje elementów z których składa się mapa
+        /// @brief Tablica definicji elementów, z których składa się mapa
         MapElementDefinition mapElementDefinitions[ 16 ];
 
-        /// @brief Liczba elementów w definicji mapy
+        /// @brief Ilość definicji elementów mapy
         int mapElementDefintionsCount;
 
         /// @brief Szerokość mapy
@@ -25,29 +25,41 @@ class Map {
         /// @brief Wysokość mapy
         int height;
 
-        /// @brief Tablica elementów mapy
+        /// @brief Tablica punktów mapy
         MapPoint map[ 32 ][ 32 ];
     
     public:
         /**
-         * @brief Konstruktor mapy
+         * @brief Konstruktor
          * 
          * @param width Szerokość mapy
          * @param height Wysokość mapy
-         * @throw "Map::Map: Szerokość mapy jest mniejsza niż 1"
-         * @throw "Map::Map: Wysokość mapy jest mniejsza niż 1"
-         * @throw "Map::Map: Szerokość mapy jest większa niż 32"
-         * @throw "Map::Map: Wysokość mapy jest większa niż 32"
+         * @throw PathFinderException: Szerokość mapy jest mniejsza niż 1
+         * @throw PathFinderException: Wysokość mapy jest mniejsza niż 1
+         * @throw PathFinderException: Szerokość mapy jest większa niż 32
+         * @throw PathFinderException: Wysokość mapy jest większa niż 32
          */
         Map ( int width, int height );
 
-        /// @brief Zwraca szerokość mapy 
+        /**
+         * @brief Zwraca szerokość mapy
+         * 
+         * @return liczba z zakresu 1 od 32
+         */
         int Width ();
 
-        /// @brief Zwraca wysokość mapy
+        /** 
+         * @brief Zwraca wysokość mapy
+         * 
+         * @return liczba z zakresu 1 od 32
+         */
         int Height ();
         
-        /// @brief Zwraca mapę
+        /**
+         * @brief Zwraca mapę
+         * 
+         * @return MapPoint* Mapa w postaci tablicy dwuwymiarowej
+         */
         MapPoint* GetMap ();
 
         /// @brief Wyświetla mapę
@@ -56,20 +68,20 @@ class Map {
         /* Definicje Elementów mapy */
 
         /**
-         * @brief Ustawia definicję elementu mapy
+         * @brief Dodaje definicję elementu mapy
          * 
          * @param mapElementDefinition Definicja elementu mapy
          */
         void AddMapElementDefinition ( MapElementDefinition mapElementDefinition );
 
         /**
-         * @brief Ustawia definicję elementu mapy
+         * @brief Dodaje definicję elementu mapy
          * 
          * @param symbol Symbol reprezentujący definicję
          * @param weight Waga elementów z tym symbolem
          * @param fgColor Kolor symbolu
          * @param bgColor Kolor tła symbolu
-         * @throw "Map::AddMapElementDefinition: Liczba definicji mapy jest większa niż 16"
+         * @throw PathFinderException: Liczba definicji mapy jest większa niż 16
          */
         void AddMapElementDefinition ( 
             char symbol, 
@@ -82,24 +94,24 @@ class Map {
          * @brief Zwraca definicję elementu mapy po indeksie
          * 
          * @param index Indeks definicji
-         * @return [MapElementDefinition] Definicja elementu mapy
-         * @throw "Map::GetMapElementDefinition: Nie znaleziono definicji elementu mapy"
+         * @return Definicja elementu mapy
+         * @throw PathFinderException: Nie znaleziono definicji elementu mapy
          */
         MapElementDefinition GetMapElementDefinition ( int index );
 
         /**
-         * @brief Zwraca Definicję elementu mapy po symbolu
+         * @brief Zwraca definicję elementu mapy po symbolu
          * 
          * @param char Symbol definicji
-         * @return [MapElementDefinition] Definicja elementu mapy
-         * @throw "Map::GetMapElementDefinition: Nie znaleziono definicji elementu mapy"
+         * @return Definicja elementu mapy
+         * @throw PathFinderException: Nie znaleziono definicji elementu mapy
          */
         MapElementDefinition GetMapElementDefinition ( char symbol );
 
         /* Punkty mapy */
 
         /**
-         * @brief Sprawdza czy punkt należy do mapy
+         * @brief Sprawdza czy punkt o podanych współrzędnych należy do mapy
          * 
          * @param x Współrzędna x punktu
          * @param y Współrzędna y punktu
@@ -128,8 +140,8 @@ class Map {
          * 
          * @param int Współrzędna X
          * @param int Współrzędna Y
-         * @throw "Map::GetMapPoint: Nieprawidłowe współrzędne punktu"
-         * @return [MapPoint*] Wskaźnik punktu z mapy
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
+         * @return Wskaźnik punktu z mapy
          */
         MapPoint* GetMapPoint ( int x, int y );
 
@@ -137,33 +149,33 @@ class Map {
          * @brief Ustawia punkt mapy
          * 
          * @param mapPoint Obiekt Punktu mapy
-         * @throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu"
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
          */
         void SetMapPoint ( MapPoint mapPoint );
 
         /**
-         * @brief Ustawia punkt mapy
+         * @brief Ustawia punkt mapy o podanych współrzędnych i symbolu
          * 
          * @param x Współrzędna X
          * @param y Współrzędna Y
          * @param symbol Symbol reprezentujący definicję elementu mapy
-         * @throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu"
-         * @throw "Map::SetMapPoint: Nie znaleziono definicji elementu mapy"
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
+         * @throw PathFinderException: Nie znaleziono definicji elementu mapy
          */
         void SetMapPoint ( int x, int y, char symbol );
 
         /**
-         * @brief Ustawia punkt mapy
+         * @brief Ustawia punkt mapy o podanych współrzędnych i definicji
          * 
          * @param x Współrzędna X
          * @param y Współrzędna Y
          * @param definition Definicja elementu mapy
-         * @throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu"
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
          */
         void SetMapPoint ( int x, int y, MapElementDefinition definition );
 
         /**
-         * @brief Ustawia punkt mapy
+         * @brief Ustawia punkt mapy o podanych współrzędnych i parametrach
          * 
          * @param x Współrzędna X
          * @param y Współrzędna Y
@@ -171,7 +183,7 @@ class Map {
          * @param weight Waga punktu
          * @param fgColor Kolor punktu
          * @param bgColor Kolor tła punktu
-         * @throw "Map::SetMapPoint: Nieprawidłowe współrzędne punktu"
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
          */
         void SetMapPoint ( 
             int x, 
@@ -183,11 +195,11 @@ class Map {
         );
 
         /**
-         * @brief Usuwa punkt mapy
+         * @brief Usuwa punkt mapy o podanych współrzędnych
          * 
          * @param x Współrzędna X
          * @param y Współrzędna Y
-         * @throw "Map::RemoveMapPoint: Nieprawidłowe współrzędne punktu"
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
          */
         void RemoveMapPoint ( int x, int y );
 
@@ -195,7 +207,7 @@ class Map {
          * @brief Usuwa punkt mapy
          * 
          * @param mapPoint Obiekt Punktu mapy
-         * @throw "Map::RemoveMapPoint: Nieprawidłowe współrzędne punktu"
+         * @throw PathFinderException: Nieprawidłowe współrzędne punktu
          */
         void RemoveMapPoint ( MapPoint mapPoint );
 };

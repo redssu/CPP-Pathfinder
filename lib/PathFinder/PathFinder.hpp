@@ -69,10 +69,10 @@ class PathFinder {
          * @brief Wykonuje algorytm wyszukiwania drogi.
          * 
          * @return Wektor z trasą od punktu startowego do punktu końcowego
-         * @throw PathFinder::FindPath: Punkt startowy nie znajduje się na mapie
-         * @throw PathFinder::FindPath: Punkt końcowy nie znajduje się na mapie
-         * @throw PathFinder::FindPath: Nie udało się odtworzyć ścieżki
-         * @throw PathFinder::FindPath: Nie udało się odnaleźć ścieżki
+         * @throw PathFinderException: Punkt startowy nie znajduje się na mapie
+         * @throw PathFinderException: Punkt końcowy nie znajduje się na mapie
+         * @throw PathFinderException: Nie udało się odtworzyć ścieżki
+         * @throw PathFinderException: Nie udało się odnaleźć ścieżki
          */
         std::vector<MapPoint*> FindPath ();
 };

@@ -14,12 +14,12 @@ class Heap {
          * 
          * @param a Indeks pierwszego elementu
          * @param b Indeks drugiego elementu
-         * @throw "Heap::Swap: Indeks elementu jest nieprawidłowy"
+         * @throw PathFinderException: Indeks elementu jest nieprawidłowy
          */
         void Swap ( int index1, int index2 );
 
         /**
-         * @brief Naprawa sterty
+         * @brief Naprawia stertę
          * 
          * @param index Indeks elementu, od którego rozpocząć naprawę
          */
@@ -43,22 +43,23 @@ class Heap {
         /**
          * @brief Zwraca ze sterty najwyżej położony element
          * 
-         * @note Tu fajnie byłoby mieć wskaźnik, ale nie wykryjemy zmiany zmiennej
-         *     a poza tym vector często jest przenoszony w pamięci, więc wskaźniki
+         * @note Tu fajnie byłoby dać wskaźnik, ale nie wykryjemy zmiany zmiennej
+         *     a poza tym wektor często jest przenoszony w pamięci, więc wskaźniki
          *     często są nieaktualne
          * @return Najwyżej położony element
-         * @throw Heap::GetTop: Sterta jest pusta, lecz próbowano zdjąć z niej element
+         * @throw PathFinderException: Sterta jest pusta, lecz próbowano zdjąć z niej element
          */
         T GetTop ();
 
         /**
          * @brief Usuwa najwyższy element ze sterty
-         * @throw Heap::GetTop: Sterta jest pusta, lecz próbowano usunąć z niej element
+         * 
+         * @throw PathFinderException: Sterta jest pusta, lecz próbowano usunąć z niej element
          */
         void Pop ();
 
         /**
-         * @brief Sprawdza, czy element @p jest w stercie
+         * @brief Sprawdza, czy element jest w stercie
          * 
          * @param element Element do sprawdzenia
          * @return true, jeśli element jest w stercie
