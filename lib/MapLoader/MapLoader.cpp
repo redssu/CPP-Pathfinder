@@ -431,20 +431,6 @@ Map MapLoader::InterpretMap (
         map.AddMapElementDefinition( definitions[ i ] );
     }
 
-    try {
-        map.GetMapElementDefinition( 'S' );
-    }
-    catch ( std::string error ) {
-        throw PathFinderException( "MapLoader::InterpretMap", "Nie znaleziono definicji punktu startowego o symbolu 'S'." );
-    }
-
-    try {
-        map.GetMapElementDefinition( 'E' );
-    }
-    catch ( std::string error ) {
-        throw PathFinderException( "MapLoader::InterpretMap", "Nie znaleziono definicji punktu koncowego o symbolu 'E'." );
-    }
-
     for ( int row = 0; row < height; row++ ) {
         for ( int col = 0; col < width; col++ ) {
             this->ExpectToken( CHAR );
