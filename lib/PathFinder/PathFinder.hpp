@@ -40,37 +40,63 @@ class PathFinder {
          * @return std::vector<MapPoint*> Wektor z wskaźnikami do sąsiadów
          */
         std::vector<MapPoint*> GetPointNeighbours ( MapPoint* point );
+
+        /**
+         * @brief Znajduje najlepszy punkt w wektorze punktów.
+         * 
+         * @param points Wskaźnik do wektora ze wskaźnikami do punków
+         * @return Indeks najlepszego punktu
+         */
+        static int FindBestPointIndex ( std::vector<MapPoint*>* points );
+
+        /**
+         * @brief Sprawdza czy punkt jest w wektorze punktów.
+         * 
+         * @param points Wskaźnik do wektora ze wskaźnikami do punktów
+         * @param point Wskaźnik do szukanego punktu
+         * @return true Jeśli punkt znajduje się w wektorze
+         */
+        static bool IsPointInVector ( std::vector<MapPoint*>* points, MapPoint* point );
+
+        /**
+         * @brief Dodaje punkt do wektoru jeśli nie znajduje go w wektorze, lub go aktualizuje jeśli znajduje.
+         * 
+         * @param points Wskaźnik do wektora ze wskaźnikami do punktów
+         * @param point Wskaźnik do dodawanego punktu
+         */
+        static void AddOrUpdatePointInVector ( std::vector<MapPoint*>* points, MapPoint* point );
+
+        /**
+         * @brief Usuwa punkt z wektora.
+         * 
+         * @param points Wskaźnik do wektora ze wskaźnikami do punktów
+         * @param point Wskaźnik do usuwanego punktu
+         */
+        static void RemovePointFromVector ( std::vector<MapPoint*>* points, MapPoint* point );
+
+        /**
+         * @brief Usuwa punkt z wektora.
+         * 
+         * @param points Wektor do wektora ze wskaźnikami do punktów
+         * @param index Indeks punktu do usunięcia
+         */
+        static void RemovePointFromVector ( std::vector<MapPoint*>* points, int index );
+        
     
     public:
         /**
          * @brief Konstruktor
          * 
          * @param map Wskaźnik do mapy na której będzie wykonywany algorytm
-         * @param start Wskaźnik do punktu startowego
-         * @param end Wskaźnik do punktu końcowego
+         * @throw PathFinderException: Nie znaleziono punktu startowego
+         * @throw PathFinderException: Nie znaleziono punktu końcowego
          */
-        PathFinder ( Map* map, MapPoint* start, MapPoint* end );
-
-        /**
-         * @brief Ustawia punkt startowy.
-         * 
-         * @param point Wskaźnik do punktu startowego
-         */
-        void SetStart ( MapPoint* point );
-
-        /**
-         * @brief Ustawia punkt końcowy.
-         * 
-         * @param point Wskaźnik do punktu końcowego
-         */
-        void SetEnd ( MapPoint* point );
+        PathFinder ( Map* map );
 
         /**
          * @brief Wykonuje algorytm wyszukiwania drogi.
          * 
          * @return Wektor z trasą od punktu startowego do punktu końcowego
-         * @throw PathFinderException: Punkt startowy nie znajduje się na mapie
-         * @throw PathFinderException: Punkt końcowy nie znajduje się na mapie
          * @throw PathFinderException: Nie udało się odtworzyć ścieżki
          * @throw PathFinderException: Nie udało się odnaleźć ścieżki
          */

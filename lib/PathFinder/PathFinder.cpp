@@ -2,7 +2,6 @@
 #include <vector>
 #include "../MapPoint/MapPoint.hpp"
 #include "../Map/Map.hpp"
-#include "../Heap/Heap.hpp"
 #include "../PathFinder/PathFinder.hpp"
 #include "../PathFinderException/PathFinderException.hpp"
 
@@ -64,48 +63,115 @@ std::vector<MapPoint*> PathFinder::GetPointNeighbours ( MapPoint* point ) {
     return neighbours;
 }
 
-PathFinder::PathFinder ( Map* map, MapPoint* start, MapPoint* end ) {
+int PathFinder::FindBestPointIndex ( std::vector<MapPoint*>* points ) {
+    if ( points->size() == 0 ) {
+        throw PathFinderException( "PathFinder::FindBestPoint", "Brak punktów do przeszukania." );
+    }
+
+    int size = points->size();
+    int bestFCost = (*points)[ 0 ]->FCost();
+    int bestIndex = 0;
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( (*points)[ i ]->FCost() < bestFCost ) {
+            bestIndex = i;
+            bestFCost = (*points)[ i ]->FCost();
+        }
+    }
+
+    return bestIndex;
+}
+
+bool PathFinder::IsPointInVector ( std::vector<MapPoint*>* points, MapPoint* point ) {
+    int size = points->size();
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( point->Is( (*points)[ i ] ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void PathFinder::AddOrUpdatePointInVector ( std::vector<MapPoint*>* points, MapPoint* point ) {
+    int size = points->size();
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( point->Is( (*points)[ i ] ) ) {
+            (*points)[ i ] = point;
+            return;
+        }
+    }
+
+    points->push_back( point );
+}
+
+void PathFinder::RemovePointFromVector ( std::vector<MapPoint*>* points, MapPoint* point ) {
+    int size = points->size();
+
+    for ( int i = 0; i < size; i++ ) {
+        if ( point->Is( (*points)[ i ] ) ) {
+            points->erase( points->begin() + i );
+            return;
+        }
+    }
+}
+
+void PathFinder::RemovePointFromVector ( std::vector<MapPoint*>* points, int index ) {
+    points->erase( points->begin() + index );
+}
+
+PathFinder::PathFinder ( Map* map ) {
     this->map = map;
-    this->start = start;
-    this->end = end;
-}
 
-void PathFinder::SetStart ( MapPoint* point ) {
-    this->start = point;
-}
+    int mapWidth = this->map->Width();
+    int mapHeight = this->map->Height();
 
-void PathFinder::SetEnd ( MapPoint* point ) {
-    this->end = point;
-}
+    for ( int row = 0; row < mapHeight; row++ ) {
+        for ( int col = 0; col < mapWidth; col++ ) {
+            char symbol = this->map->GetMapPoint( col, row )->Symbol();
 
-std::vector<MapPoint*> PathFinder::FindPath () {
+            if ( symbol == 'S' ) {
+                this->start = this->map->GetMapPoint( col, row );
+            } 
+            else if ( symbol == 'E' ) {
+                this->end = this->map->GetMapPoint( col, row );
+            }
+        }
+    }
+
     if ( !this->map->IsPointInMap( this->start ) ) {
-        throw PathFinderException( "PathFinder::FindPath", "Punkt startowy nie znajduje się na mapie" );
+        throw PathFinderException( "PathFinder::PathFinder", "Nie znaleziono punktu startowego." );
     }
 
     if ( !this->map->IsPointInMap( this->end ) ) {
-        throw PathFinderException( "PathFinder::FindPath", "Punkt końcowy nie znajduje się na mapie" );
+        throw PathFinderException( "PathFinder::PathFinder", "Nie znaleziono punktu końcowego." );
     }
+}
 
+std::vector<MapPoint*> PathFinder::FindPath () {
     // wierzchołki odwiedzone
-    Heap<MapPoint*> closedList = Heap<MapPoint*>();
+    std::vector<MapPoint*> closedList;
 
     // wierzchołki nieodwiedzone
-    Heap<MapPoint*> openList = Heap<MapPoint*>();
+    std::vector<MapPoint*> openList;
 
-    openList.Insert( this->start );
+    openList.push_back( this->start );
 
     // koszt dotarcia do startu jest równy zero
     this->start->SetGCost( 0 );
 
-    while ( openList.Size() > 0 ) {
-        MapPoint* current = openList.GetTop();
+    while ( openList.size() > 0 ) {
+        int bestPointIndex = FindBestPointIndex( &openList );
+        MapPoint* current = openList[ bestPointIndex ];
 
         // jeśli trafiliśmy na punkt końcowy, zakończ
         if ( current->Is( this->end ) ) {
             std::vector<MapPoint*> path;
             path.push_back( current );
 
+            // rekonstruujemy ścieżkę
             while ( !current->Is( this->start ) ) {
                 current = current->GetParent();
 
@@ -121,8 +187,8 @@ std::vector<MapPoint*> PathFinder::FindPath () {
         
         // sprawdzamy teraz ten wierzchołek, więc przenosimy go 
         // z listy nieodwiedzonych do listy odwiedzonych
-        openList.Pop();
-        closedList.Insert( current );
+        RemovePointFromVector( &openList, bestPointIndex );
+        AddOrUpdatePointInVector( &closedList, current );
 
         std::vector<MapPoint*> neighbours = this->GetPointNeighbours( current );
 
@@ -132,7 +198,7 @@ std::vector<MapPoint*> PathFinder::FindPath () {
             // jeśli ten wierzchołek już przeglądaliśmy to go pomijamy
             MapPoint* neighbour = neighbours[ i ];
 
-            if ( closedList.Contains( neighbour ) ) {
+            if ( IsPointInVector( &closedList, neighbour ) ) {
                 continue;
             }
 
@@ -147,13 +213,16 @@ std::vector<MapPoint*> PathFinder::FindPath () {
             // to znaczy że znaleźliśmy do niego lepszą drogę
             // lub jeśli sąsiad nie był jeszcze odwiedzony
             // to jest to jego pierwsza optymalna droga
-            if ( newNeighbourGCost < neighbour->GCost() || !openList.Contains( neighbour ) ) {
-                neighbour->SetGCost( newNeighbourGCost );
-                neighbour->SetHCost( this->CalculateHCost( neighbour, this->end ) );
-                neighbour->SetParent( current );
+            bool isNeighbourInOpenList = IsPointInVector( &openList, neighbour );
 
-                // dodajemy go do kandydatów następnej iteracji
-                openList.InsertOrChange( neighbour );
+            if ( newNeighbourGCost < neighbour->GCost() || !isNeighbourInOpenList ) {
+                neighbour->SetParent( current );
+                neighbour->SetGCost( newNeighbourGCost );
+
+                if ( !isNeighbourInOpenList ) {
+                    neighbour->SetHCost( this->CalculateHCost( neighbour, this->end ) );
+                    openList.push_back( neighbour );
+                }
             }
         }
     }

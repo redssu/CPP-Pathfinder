@@ -32,10 +32,13 @@ int Map::Height () { return this->height; }
 MapPoint* Map::GetMap () { return *this->map; }
 
 void Map::Print () {
-    for ( int y = 0; y < this->height; y++ ) {
-        for ( int x = 0; x < this->width; x++ ) {
-            Console::SetColor( this->map[ y ][ x ].FGColor(), this->map[ y ][ x ].BGColor() );
-            std::cout << this->map[ y ][ x ].Symbol();
+    int mapWidth = this->width;
+    int mapHeight = this->height;
+
+    for ( int y = 0; y < mapHeight; y++ ) {
+        for ( int x = 0; x < mapWidth; x++ ) {
+            Console::SetColor( this->map[ x ][ y ].FGColor(), this->map[ x ][ y ].BGColor() );
+            std::cout << this->map[ x ][ y ].Symbol();
             Console::ResetColor();
         }
 
@@ -92,7 +95,7 @@ MapElementDefinition Map::GetMapElementDefinition ( char symbol ) {
 /* Punkty */
 
 bool Map::IsPointInMap ( int x, int y ) {
-    return ( x >= 0 || x < this->width || y >= 0 || y < this->height );
+    return ( x >= 0 && x < this->width && y >= 0 && y < this->height );
 }
 
 bool Map::IsPointInMap ( MapPoint point ) {
@@ -129,8 +132,8 @@ void Map::SetMapPoint ( int x, int y, char symbol ) {
     this->map[ x ][ y ] = MapPoint( 
         x, 
         y, 
-        symbol, 
         definition.weight, 
+        definition.symbol, 
         definition.fgColor, 
         definition.bgColor 
     );
@@ -144,8 +147,8 @@ void Map::SetMapPoint ( int x, int y, MapElementDefinition definition ) {
     this->map[ x ][ y ] = MapPoint( 
         x, 
         y, 
-        definition.symbol, 
         definition.weight, 
+        definition.symbol, 
         definition.fgColor, 
         definition.bgColor 
     );
@@ -159,8 +162,8 @@ void Map::SetMapPoint ( int x, int y, char symbol, float weight, Color fgColor, 
     this->map[ x ][ y ] = MapPoint( 
         x, 
         y, 
-        symbol, 
         weight, 
+        symbol, 
         fgColor, 
         bgColor 
     );
