@@ -1,15 +1,24 @@
-width: 7;
-height: 5;
+width: 17;
+height: 13;
 
-def: 'S', 1.0, @BRIGHT_GREEN, @BRIGHT_GREEN;
-def: 'E', 100, @BRIGHT_BLACK, @BRIGHT_BLACK;
+def: 'S', 1.0, @BLACK, @BRIGHT_BLUE;
+def: 'E', 1.0, @BLACK, @BRIGHT_RED;
 
 def: '.', 1.0, @BRIGHT_GREEN, @BRIGHT_GREEN; # trawa
-def: '#', 100, @BRIGHT_BLACK, @BRIGHT_BLACK; # ściana
+def: '#', 999, @BRIGHT_BLACK, @BRIGHT_BLACK; # ściana
+def: 'B', 300, @GREEN, @GREEN; # bagno?
 
 $map:
-#######
-#....E#
-#.....#
-#S....#
-#######
+#################
+#S#.#.........#.#
+#.#.#.###.#####.#
+#.#...#...#.#...#
+#.#.###.###.#.###
+#...#.#.....#.#.#
+#####.#.###.#.#.#
+#.......#.#.....#
+#.###.#.#.###.#.#
+#.#...#.#.....#.#
+#.#####.#####.#.#
+#...#.......#.#E#
+#################
