@@ -1,6 +1,8 @@
 width: 17;
 height: 13;
 
+allowdiagonal: 0;
+
 def: 'S', 1.0, @BLACK, @BRIGHT_BLUE;
 def: 'E', 1.0, @BLACK, @BRIGHT_RED;
 

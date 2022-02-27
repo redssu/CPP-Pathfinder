@@ -84,6 +84,7 @@ class PathFinder {
         
     
     public:
+        static bool ALLOW_DIAGONAL_NEIGHBOURS;
         /**
          * @brief Konstruktor
          * 

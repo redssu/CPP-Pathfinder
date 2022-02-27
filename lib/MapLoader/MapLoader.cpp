@@ -425,6 +425,11 @@ Map MapLoader::InterpretMap (
     int width = (int) variables[ "width" ];
     int height = (int) variables[ "height" ];
 
+    if ( variables.count( "allowdiagonal" ) != 0 ) {
+        bool allowDiagonal = variables[ "allowdiagonal" ] != 0.0f;
+        PathFinder::ALLOW_DIAGONAL_NEIGHBOURS = allowDiagonal;
+    }
+
     Map map = Map( width, height );
 
     for ( int i = 0; i < definitionCount; i++ ) {

@@ -5,6 +5,8 @@
 #include "../PathFinder/PathFinder.hpp"
 #include "../PathFinderException/PathFinderException.hpp"
 
+bool PathFinder::ALLOW_DIAGONAL_NEIGHBOURS = false;
+
 int PathFinder::CalculateHCost ( MapPoint* point1, MapPoint* point2 ) {
     int horizontalDistance = abs( point1->X() - point2->X() );
     int verticalDistance = abs( point1->Y() - point2->Y() );
@@ -45,7 +47,11 @@ std::vector<MapPoint*> PathFinder::GetPointNeighbours ( MapPoint* point ) {
         for ( int dy = -1; dy <= 1; dy++ ) {
             // dx = 0 i dy = 0 to inaczej punkt dla którego
             // szukamy sąsiadów, więc go pomijamy
-            if ( ( dx == 0 ) && ( dy == 0 ) ) {
+            if ( ( dx == 0 ) && ( dy == 0 )  ) {
+                continue;
+            }
+
+            if ( !ALLOW_DIAGONAL_NEIGHBOURS && dx != 0 && dy != 0 ) {
                 continue;
             }
 
