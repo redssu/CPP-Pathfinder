@@ -6,6 +6,7 @@
 #include <fstream>
 #include <map>
 #include "../Map/Map.hpp"
+#include "../PathFinder/PathFinder.hpp"
 
 enum TokenType {
     IDENTIFIER,

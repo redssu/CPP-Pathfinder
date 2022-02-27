@@ -15,6 +15,7 @@ void Console::Initialize () {
     // ustaw domyślne wartości atrybutów konsoli
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo( hConsole, &csbi );
+    SetConsoleOutputCP( CP_UTF8 );
     originalAttributes = csbi.wAttributes;
 }
 

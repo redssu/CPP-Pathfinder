@@ -5,6 +5,7 @@
 #include "lib/Map/Map.hpp"
 #include "lib/PathFinder/PathFinder.hpp"
 #include "lib/MapLoader/MapLoader.hpp"
+#include "lib/PathDrawer/PathDrawer.hpp"
 #include "lib/PathFinderException/PathFinderException.hpp"
 
 int main () {
@@ -18,24 +19,12 @@ int main () {
         PathFinder pathFinder = PathFinder( &map );
 
         std::vector<MapPoint*> path = pathFinder.FindPath();
-        int pathSize = path.size();
 
-        for ( int i = 0; i < pathSize; i++ ) {
-            MapPoint* point = map.GetMapPoint( path[ i ]->X(), path[ i ]->Y() );
-
-            if ( point->Symbol() == 'E' || point->Symbol() == 'S' ) {
-                continue;
-            }
-
-            point->SetSymbol( '*' );
-            point->SetFGColor( RED );
-        }
-
-        map.Print();
+        PathDrawer::DisplayMapWithPath( &map, path ); 
     }
     catch ( PathFinderException exception ) {
         Console::SetColor( BRIGHT_WHITE, BRIGHT_RED );
-        std::cout << "Wystapil blad:";
+        std::cout << "Wystąpił błąd:";
 
         Console::SetColor( BRIGHT_RED, BLACK );
         std::cout << " " << exception.GetFunctionName();
