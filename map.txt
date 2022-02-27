@@ -3,12 +3,11 @@ height: 13;
 
 allowdiagonal: 0;
 
-def: 'S', 1.0, @BLACK, @BRIGHT_BLUE;
-def: 'E', 1.0, @BLACK, @BRIGHT_RED;
+def: 'S', 1.0, @BLACK, @BRIGHT_BLUE; # Start
+def: 'E', 1.0, @BLACK, @BRIGHT_RED; # Koniec
 
 def: '.', 1.0, @BRIGHT_GREEN, @BRIGHT_GREEN; # trawa
 def: '#', 999, @BRIGHT_BLACK, @BRIGHT_BLACK; # ściana
-def: 'B', 300, @GREEN, @GREEN; # bagno?
 
 $map:
 #################
@@ -17,7 +16,7 @@ $map:
 #.#...#...#.#...#
 #.#.###.###.#.###
 #...#.#.....#.#.#
-#####.#.###.#.#.#
+###.#.#.###.#.#.#
 #.......#.#.....#
 #.###.#.#.###.#.#
 #.#...#.#.....#.#
