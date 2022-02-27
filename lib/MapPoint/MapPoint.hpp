@@ -23,13 +23,13 @@ class MapPoint {
         Color bgColor;
 
         /// @brief koszt dotarcia od startu do tego punktu
-        int gCost; 
+        long int gCost; 
 
         /// @brief (potencjalny) koszt dotarcia od tego punktu do celu
-        int hCost;
+        long int hCost;
 
         /// @brief "opłacalność" punktu (mniej -> lepiej)
-        int fCost;
+        long int fCost;
 
         /// @brief Poprzedni punkt w drodze do punktu startowego
         MapPoint* parent;
@@ -77,26 +77,35 @@ class MapPoint {
         /// @returns Symbol reprezentujący ten punkt
         char Symbol ();
 
+        /// @brief Ustawia symbol reprezentujący ten punkt
+        void SetSymbol ( char symbol );
+
         /// @returns Kolor symbolu
         Color FGColor ();
+
+        /// @brief Ustawia kolor symbolu
+        void SetFGColor ( Color fgColor );
 
         /// @returns Kolor tła symbolu
         Color BGColor ();
 
+        /// @brief Ustawia kolor tła symbolu
+        void SetBGColor ( Color bgColor );
+
         /// @returns Koszt dotarcia od startu do tego punktu.
-        int GCost ();
+        long int GCost ();
 
         /// @returns (potencjalny) koszt dotarcia od tego punktu do celu.
-        int HCost ();
+        long int HCost ();
 
         /// @returns "opłacalność" punktu (mniej -> lepiej).
-        int FCost ();
+        long int FCost ();
 
         /// @brief Ustawia koszt dotarcia od startu do tego punktu.
-        void SetGCost ( int gCost );
+        void SetGCost ( long int gCost );
 
         /// @brief Ustawia koszt dotarcia od tego punktu do celu.
-        void SetHCost ( int fCost );
+        void SetHCost ( long int fCost );
 
         /// @brief Ustawia punkt poprzedni w trasie do celu.
         void SetParent ( MapPoint *parent );

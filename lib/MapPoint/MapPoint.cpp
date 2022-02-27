@@ -79,17 +79,22 @@ MapPoint::MapPoint (
 int MapPoint::X () { return this->x; }
 int MapPoint::Y () { return this->y; }
 float MapPoint::Weight () { return this->weight; }
+
 char MapPoint::Symbol () { return this->symbol; }
+void MapPoint::SetSymbol ( char symbol ) { this->symbol = symbol; }
 
 Color MapPoint::FGColor () { return this->fgColor; }
+void MapPoint::SetFGColor ( Color fgColor ) { this->fgColor = fgColor; }
+
 Color MapPoint::BGColor () { return this->bgColor; }
+void MapPoint::SetBGColor ( Color bgColor ) { this->bgColor = bgColor; }
 
-int MapPoint::GCost () { return this->gCost; }
-int MapPoint::HCost () { return this->hCost; }
-int MapPoint::FCost () { return this->fCost; }
+long int MapPoint::GCost () { return this->gCost; }
+long int MapPoint::HCost () { return this->hCost; }
+long int MapPoint::FCost () { return this->fCost; }
 
-void MapPoint::SetGCost ( int gCost ) { this->gCost = gCost; this->calculateFCost(); }
-void MapPoint::SetHCost ( int fCost ) { this->hCost = fCost; this->calculateFCost(); }
+void MapPoint::SetGCost ( long int gCost ) { this->gCost = gCost; this->calculateFCost(); }
+void MapPoint::SetHCost ( long int fCost ) { this->hCost = fCost; this->calculateFCost(); }
 
 void MapPoint::SetParent ( MapPoint *parent ) { this->parent = parent; }
 MapPoint* MapPoint::GetParent () { return this->parent; }
