@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <map>
 #include "../Map/Map.hpp"
 
 enum TokenType {
@@ -31,6 +32,9 @@ class MapLoader {
 
         /// @brief Lista tokenów
         std::vector<Token> tokens;
+
+        /// @brief Wskaźnik do mapy
+        Map* map;
 
         /**
          * Sprawdza czy podany znak jest znakiem białym
@@ -73,19 +77,19 @@ class MapLoader {
         static bool IsNumeric ( char character );
 
         /// @brief Przetwarza token typu COLOR
-        void Color ();
+        void ParseColor ();
 
         /// @brief Przetwarza token typu NUMBER
-        void Number ();
+        void ParseNumber ();
 
         /// @brief Przetwarza token typu CHAR
-        void Char ();
+        void ParseChar ();
 
         /// @brief Przetwarza token typu IDENTIFIER
-        void Identifier ();
+        void ParseIdentifier ();
 
         /// @brief Przetwarza rysunek mapy
-        void Map ();
+        void ParseMap ();
 
         /// @brief Pomija wszelkie znaki białe od obecnej pozycji w pliku
         void SkipWhitespace ();
@@ -100,6 +104,74 @@ class MapLoader {
          * @throw MapLoader::ExpectSequence: Oczekiwano znaku '%s'
          */
         void ExpectSequence ( std::string sequence );
+
+
+        /// @brief Pozycja w wektorze tokenów
+        int currentIndex;
+        
+        /**
+         * @brief Funkcja pobierająca obecny token
+         * 
+         * @return Token Token
+         * @throw MapLoader::GetToken: Nieoczekiwany koniec listy tokenów.
+         */
+        Token GetToken ();
+
+        /**
+         * @brief Funkcja zwracająca liczbę pozostałych tokenów
+         * 
+         * @return int
+         */
+        int TokensLeft ();
+
+        /**
+         * @brief Funkcja sprawdzająca, czy token jest konkretnego typu. Jeśli nie, wyrzuca wyjątek
+         * 
+         * @param type Typ tokena
+         * @throw MapLoader::ExpectToken: Nieoczekiwany token '%s'. Oczekiwano tokena typu '%s'.
+         */
+        void ExpectToken ( TokenType type );
+
+        /**
+         * @brief Funkcja podglądająca typ następnego tokena
+         * 
+         * @return TokenType
+         * @throw MapLoader::PeekTokenType: Nieoczekiwany koniec listy tokenów.
+         */
+        TokenType PeekTokenType ();
+
+        /**
+         * @brief Funkcja zjadająca obecny token
+         * 
+         * @throw MapLoader::ConsumeToken: Nieoczekiwany koniec listy tokenów.
+         */
+        void ConsumeToken ();
+
+        /**
+         * @brief Funkcja interpretująca zmienną
+         * 
+         * @param name Nazwa zmiennej
+         * @param variables Wskaźnik do mapy zmiennych
+         */
+        void InterpretVariable ( std::string name, std::map<std::string, float>* variables );
+
+        /**
+         * @brief Funkcja interpretująca definicję
+         * 
+         * @param definitions Tablica definicji
+         * @param definitionCount Wskaźnik do licznika definicji
+         */
+        void InterpretDefinition ( MapElementDefinition* definitions, int* definitionCount );
+
+        /**
+         * @brief Funkcja interpretująca mapę
+         * 
+         * @param variables Mapa zmiennych
+         * @param definitions Tablica definicji
+         * @param definitionCount Licznik definicji
+         * @return Obiekt mapy
+         */
+        Map InterpretMap ( std::map<std::string, float> variables, MapElementDefinition* definitions, int definitionCount );
 
     public:
         /**
@@ -117,15 +189,17 @@ class MapLoader {
          */
         void Tokenize ();
 
-        /// @brief Wyświetla listę tokenów
-        void PrintTokens () {
-            int size = this->tokens.size();
+        /**
+         * @brief Interpretuje listę tokenów
+         * 
+         * expression = variable | map | definition
+         * variable = identifier, colon, number, semicolon
+         * map = mapstart, char, mapend
+         * definition = identifier, colon, char, comma, number, comma, color, comma, color, semicolon
+         */
+        Map Interpret ();
 
-            for ( int i = 0; i < size; i++ ) {
-                std::cout << this->tokens[ i ].type << ": " << this->tokens[i].value << std::endl;
-            }
-        }
-
+        static std::string TokenTypeToStr ( TokenType type );
 };
 
 #endif

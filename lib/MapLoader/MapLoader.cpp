@@ -1,9 +1,11 @@
+#include "../Console/Console.hpp"
 #include "../MapPoint/MapPoint.hpp"
 #include "../Map/Map.hpp"
 #include "./MapLoader.hpp"
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <map>
 
 MapLoader::MapLoader ( std::string fileName ) {
     this->file.open( fileName );
@@ -12,6 +14,23 @@ MapLoader::MapLoader ( std::string fileName ) {
         throw std::runtime_error( "MapLoader::MapLoader: Nie udało się otworzyć pliku." );
     }
 }
+
+std::string MapLoader::TokenTypeToStr ( TokenType type ) {
+    switch ( type ) {
+        case TokenType::IDENTIFIER: return "Identifier";
+        case TokenType::COMMA: return "Comma";
+        case TokenType::COLON: return "Colon";
+        case TokenType::SEMICOLON: return "Semicolon";
+        case TokenType::CHAR: return "Char";
+        case TokenType::NUMBER: return "Number";
+        case TokenType::COLOR: return "Color";
+        case TokenType::MAPSTART: return "MapStart";
+        case TokenType::MAPEND: return "MapEnd";
+        case TokenType::END: return "End";
+    }
+}
+
+
 
 void MapLoader::Tokenize () {
     if ( !this->file.good() ) {
@@ -46,27 +65,27 @@ void MapLoader::Tokenize () {
 
         if ( currentChar == '@' ) {
             this->file.get();
-            this->Color();
+            this->ParseColor();
             continue;
         }
 
         if ( currentChar == '\'' ) {
-            this->Char();
+            this->ParseChar();
             continue;
         }
 
         if ( currentChar == '$' ) {
-            this->Map();
+            this->ParseMap();
             continue;
         }
 
         if ( IsNumeric( currentChar ) || currentChar == '-' ) {
-            this->Number();
+            this->ParseNumber();
             continue;
         }
 
         if ( IsAlphabetic( currentChar ) ) {
-            this->Identifier();
+            this->ParseIdentifier();
             continue;
         }
 
@@ -87,7 +106,7 @@ void MapLoader::Tokenize () {
     }
     while ( this->file.good() );
 
-    this->tokens.push_back( { END, "END" } );
+    this->tokens.push_back( { END, "FILE_END" } );
 }
 
 bool MapLoader::IsWhitespace ( char character ) {
@@ -95,7 +114,7 @@ bool MapLoader::IsWhitespace ( char character ) {
 }
 
 bool MapLoader::IsAlphabetic ( char character ) {
-    return (  IsAlphabeticUppercase( character ) || IsAlphabeticLowercase( character ) );
+    return ( IsAlphabeticUppercase( character ) || IsAlphabeticLowercase( character ) );
 }
 
 bool MapLoader::IsAlphabeticUppercase ( char character ) {
@@ -110,7 +129,7 @@ bool MapLoader::IsNumeric ( char character ) {
     return ( character >= '0' && character <= '9' );
 }
 
-void MapLoader::Color () {
+void MapLoader::ParseColor () {
     if ( !this->file.good() ) {
         return;
     }
@@ -132,7 +151,7 @@ void MapLoader::Color () {
     this->tokens.push_back( { COLOR, tokenValue } );
 }
 
-void MapLoader::Number () {
+void MapLoader::ParseNumber () {
     if ( !this->file.good() ) {
         return;
     }
@@ -171,7 +190,7 @@ void MapLoader::Number () {
     this->tokens.push_back( { NUMBER, number } );
 }
 
-void MapLoader::Char () {
+void MapLoader::ParseChar () {
     if ( !this->file.good() ) {
         return;
     }
@@ -190,7 +209,7 @@ void MapLoader::Char () {
     }
 }
 
-void MapLoader::Identifier () {
+void MapLoader::ParseIdentifier () {
     if ( !this->file.good() ) {
         return;
     }
@@ -206,22 +225,28 @@ void MapLoader::Identifier () {
     this->tokens.push_back( { IDENTIFIER, identifier } );
 }
 
-void MapLoader::Map () {
+void MapLoader::ParseMap () {
     // zacznij od sprawdzenia czy sekwencja znaków jest prawidłowa
     this->ExpectSequence( "$map:" );
     // pomiń wszelkie znaki białe
     this->SkipWhitespace();
 
     // dodaj token rozpoczynający mapę
-    this->tokens.push_back( { MAPSTART, "" } );
+    this->tokens.push_back( { MAPSTART, "$$MAP_START$$" } );
 
     // dodawaj i zjadajmy znaki tak długo, aż to możliwe
     while ( this->file.good() ) {
-        this->tokens.push_back( { CHAR, std::string( 1, this->file.get() ) } );
+        char character = this->file.get();
+
+        if ( (int) character == -1 ) {
+            break;
+        }
+
+        this->tokens.push_back( { CHAR, std::string( 1, character ) } );
     }
 
     // dodaj token kończący mapę
-    this->tokens.push_back( { MAPEND, "" } );
+    this->tokens.push_back( { MAPEND, "$$MAP_END$$" } );
 } 
 
 void MapLoader::SkipWhitespace () {
@@ -249,4 +274,204 @@ void MapLoader::ExpectSequence ( std::string sequence ) {
         // jeśli tak, to zjedz go
         this->file.get();
     }
+}
+
+
+
+Token MapLoader::GetToken () {
+    // jeśli nie ma już tokenów, to zwróć pusty token
+    if ( this->TokensLeft() == 0 ) {
+        throw "MapLoader::GetToken: Nieoczekiwany koniec listy tokenów.";
+    }
+
+    // zwróć token z obecnej pozycji
+    Token token = this->tokens[ this->currentIndex ];
+
+    return token;
+}
+
+int MapLoader::TokensLeft () {
+    return this->tokens.size() - this->currentIndex;
+}
+
+void MapLoader::ExpectToken ( TokenType type ) {
+    Token token = this->GetToken();
+
+    if ( token.type != type ) {
+        throw "MapLoader::ExpectToken: Nieoczekiwany token '" + TokenTypeToStr( token.type ) + "'. Oczekiwano tokena typu '" + TokenTypeToStr( type ) + "'.";
+    }
+}
+
+TokenType MapLoader::PeekTokenType () {
+    if ( this->TokensLeft() < 2 ) {
+        throw "MapLoader::PeekTokenType: Nieoczekiwany koniec listy tokenów.";
+    }
+
+    return this->tokens[ this->currentIndex + 1 ].type;
+}
+
+void MapLoader::ConsumeToken () {
+    if ( this->TokensLeft() == 0 ) {
+        throw "MapLoader::ConsumeToken: Nieoczekiwany koniec listy tokenów.";
+    }
+
+    this->currentIndex++;
+}
+
+Map MapLoader::Interpret () {
+    Token currentToken = this->GetToken();
+
+    std::map<std::string, float> variables;
+
+    MapElementDefinition mapElementDefinitions[ 16 ];
+    int mapElementDefinitionsCount = 0;
+
+    while ( currentToken.type != END ) {
+        if ( currentToken.type == IDENTIFIER ) {
+            // Jest to albo ustawienie zmiennej, albo stworzenie definicji
+            std::string name = currentToken.value;
+            this->ConsumeToken();
+            this->ExpectToken( COLON );
+            
+            if ( name == "def" ) {
+                this->InterpretDefinition( mapElementDefinitions, &mapElementDefinitionsCount );
+            }
+            else {
+                // Jest to ustawienie zmiennej
+                this->InterpretVariable( name, &variables );
+            }
+        }
+        else if ( currentToken.type == MAPSTART ) {
+            // Jest to rozpoczęcie mapy
+            return this->InterpretMap( variables, mapElementDefinitions, mapElementDefinitionsCount );
+        }
+        else {
+            throw "MapLoader::Interpret: Nieoczekiwany token '" + TokenTypeToStr( currentToken.type ) + "'. Oczekiwano tokena typu '" + TokenTypeToStr( IDENTIFIER ) + "'.";
+        }
+
+        currentToken = this->GetToken();
+    }
+
+    throw "MapLoader::Interpret: Nieoczekiwany koniec pliku.";
+}
+
+void MapLoader::InterpretVariable ( std::string name, std::map<std::string, float>* variables ) {
+    this->ConsumeToken();
+
+    this->ExpectToken( NUMBER );
+    float value = std::stof( this->GetToken().value );
+    this->ConsumeToken();
+
+    this->ExpectToken( SEMICOLON );
+    this->ConsumeToken();
+
+    ( *variables )[ name ] = value;
+}
+
+void MapLoader::InterpretDefinition ( MapElementDefinition* definitions, int* definitionCount ) {
+    this->ConsumeToken();
+
+    this->ExpectToken( CHAR );
+    char symbol = this->GetToken().value[ 0 ];
+    this->ConsumeToken();
+    
+    this->ExpectToken( COMMA );
+    this->ConsumeToken();
+    
+    this->ExpectToken( NUMBER );
+    float weight = std::stof( this->GetToken().value );
+    this->ConsumeToken();
+    
+    this->ExpectToken( COMMA );
+    this->ConsumeToken();
+
+    this->ExpectToken( COLOR );
+    Color color = (Color) std::stoi( this->GetToken().value );
+    this->ConsumeToken();
+
+    this->ExpectToken( COMMA );
+    this->ConsumeToken();
+
+    this->ExpectToken( COLOR );
+    Color bgColor = (Color) std::stoi( this->GetToken().value );
+    this->ConsumeToken();
+
+    this->ExpectToken( SEMICOLON );
+    this->ConsumeToken();
+
+    if ( *definitionCount > 15 ) {
+        throw "MapLoader::InterpretDefinition: Za dużo definicji elementów mapy.";
+    }
+
+    definitions[ (*definitionCount)++ ] = { symbol, weight, color, bgColor };
+}
+
+Map MapLoader::InterpretMap ( 
+    std::map<std::string, float> variables, 
+    MapElementDefinition* definitions,  
+    int definitionCount
+) {
+    this->ConsumeToken();
+    
+    if ( variables.count( "width" ) == 0 ) {
+        throw "MapLoader::InterpretMap: Brak zmiennej 'width'.";
+    }
+
+    if ( variables.count( "height" ) == 0 ) {
+        throw "MapLoader::InterpretMap: Brak zmiennej 'height'.";
+    }
+
+    int width = (int) variables[ "width" ];
+    int height = (int) variables[ "height" ];
+
+    Map map = Map( width, height );
+
+    for ( int i = 0; i < definitionCount; i++ ) {
+        map.AddMapElementDefinition( definitions[ i ] );
+    }
+
+    try {
+        map.GetMapElementDefinition( 'S' );
+    }
+    catch ( std::string error ) {
+        throw "MapLoader::InterpretMap: Nie znaleziono definicji punktu startowego o symbolu 'S'.";
+    }
+
+    try {
+        map.GetMapElementDefinition( 'E' );
+    }
+    catch ( std::string error ) {
+        throw "MapLoader::InterpretMap: Nie znaleziono definicji punktu koncowego o symbolu 'E'.";
+    }
+
+    for ( int row = 0; row < height; row++ ) {
+        for ( int col = 0; col < width; col++ ) {
+            this->ExpectToken( CHAR );
+            char symbol = this->GetToken().value[ 0 ];
+            this->ConsumeToken();
+
+            map.SetMapPoint( col, row, symbol );
+        }
+
+        // jeżeli to ostatni wiersz, to nie oczekujemy końca linii
+        if ( row == height - 1 ) {
+            break;
+        }
+
+        this->ExpectToken( CHAR );
+        char newline = this->GetToken().value[ 0 ];
+
+        if ( newline != '\n' ) {
+            throw "MapLoader::InterpretMap: Nieoczekiwany token znaku '" + std::to_string( newline ) + "'. Oczekiwano tokena znaku nowej linii.";
+        }
+
+        this->ConsumeToken();
+    }
+
+    this->ExpectToken( MAPEND );
+    this->ConsumeToken();
+    this->ExpectToken( END );
+    this->ConsumeToken();
+
+    return map;
 }
