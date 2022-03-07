@@ -11,8 +11,13 @@
 int main () {
     Console::Initialize();
 
+    std::string fileName;
+
+    std::cout << "Podaj nazwę pliku do wczytania (wraz z rozszerzeniem): ";
+    std::cin >> fileName;
+
     try {
-        MapLoader mapLoader = MapLoader( "map.txt" );
+        MapLoader mapLoader = MapLoader( fileName );
         mapLoader.Tokenize();
         Map map = mapLoader.Interpret();
 
